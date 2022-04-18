@@ -1,0 +1,152 @@
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.initiative {
+  border: 10px solid var(--c-border-thick);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr min-content;
+  height: 100vh;
+  justify-items: stretch;
+  width: 70vw;
+}
+
+.rows {
+  grid-column: 1 / 4;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  border-bottom: 1px solid var(--c-border);
+  display: grid;
+  grid-template-columns:
+    minmax(137px, 1fr)
+    minmax(200px, 2fr)
+    minmax(180px, 1fr)
+    2fr;
+  height: 60px;
+  position: relative;
+}
+
+.row.is-turn::after {
+  background: var(--c-text-decrease);
+  content: '';
+  height: 100%;
+  left: -10px;
+  position: absolute;
+  width: 10px;
+}
+
+.cell {
+  align-items: center;
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.cell:last-of-type {
+  border-right: 1px solid transparent;
+}
+
+.cell button.sort {
+  align-self: stretch;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--c-text);
+  cursor: pointer;
+  display: grid;
+  flex-shrink: 1;
+  font-size: 0.5em;
+  font-weight: 500;
+  margin-bottom: -1px;
+  margin-left: 5px;
+  margin-right: -11px;
+  padding: 0 8px 0 8px;
+  place-items: center;
+  text-transform: uppercase;
+  writing-mode: sideways-rl;
+}
+
+.cell button.sort:hover {
+  border: 1px solid var(--c-border-hover);
+}
+
+.editable-cell {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-grow: 1;
+  /* so borders on hover don't look nasty */
+  margin: -1px 0 -1px -1px;
+  padding: 0 5px;
+  position: relative;
+}
+
+.editable-cell:focus-within {
+  border: 1px solid var(--c-border-selected);
+}
+
+.editable-cell:hover:not(:focus-within) {
+  border: 1px solid var(--c-border-hover);
+}
+
+.editable-cell:not(:last-of-type):not(:hover):not(:focus-within) {
+  border: 1px solid transparent;
+  border-right: 1px solid var(--c-border);
+}
+
+.editable-cell input {
+  animation: 166ms fadein forwards;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  display: flex;
+  font-size: 0.75em;
+  justify-content: center;
+  left: 10%;
+  padding: 5px;
+  position: absolute;
+  top: 80%;
+  width: 100%;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion) {
+  .editable-cell input {
+    animation: none;
+  }
+}
+
+.editable-cell .autocomplete-result {
+  white-space: pre;
+}
+.editable-cell .autocomplete-result.add {
+  color: var(--c-text-increase);
+}
+.editable-cell .autocomplete-result.subtract {
+  color: var(--c-text-decrease);
+}
+
+/* TODO: Make this stretch only up to 225px wide */
+button.next {
+  align-self: end;
+  border: 4px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text);
+  cursor: pointer;
+  grid-column: 3 / 4;
+  margin: 16px;
+  padding: 12px 24px;
+}
+
+button.next:hover {
+  border: 4px solid var(--c-border-hover);
+}
