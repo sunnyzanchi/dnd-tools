@@ -2,7 +2,7 @@ import { Ref } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
 import useElementSize from 'hooks/useElementSize'
-import useKeybind from 'hooks/useKeybind'
+import useKeyBind from '@zanchi/use-key-bind'
 import useStack from 'hooks/useStack'
 import Header from './Header'
 import Row, { COLUMNS } from './Row'
@@ -45,8 +45,8 @@ const Initiative = () => {
     setRows(createRows(numRows))
   }, [height])
 
-  useKeybind(
-    'Enter',
+  useKeyBind(
+    ['Enter'],
     () => {
       if (selectedRow == null || selectedColumn == null) return
 
@@ -55,8 +55,8 @@ const Initiative = () => {
     [selectedRow, selectedColumn]
   )
 
-  useKeybind(
-    'Shift + Enter',
+  useKeyBind(
+    ['Shift + Enter'],
     () => {
       if (selectedRow == null || selectedColumn == null) return
 
@@ -65,8 +65,8 @@ const Initiative = () => {
     [selectedRow, selectedColumn]
   )
 
-  useKeybind(
-    'Tab',
+  useKeyBind(
+    ['Tab'],
     (e) => {
       e.preventDefault()
       if (selectedRow == null || selectedColumn == null) return
@@ -79,8 +79,8 @@ const Initiative = () => {
     [selectedRow, selectedColumn]
   )
 
-  useKeybind(
-    'Shift + Tab',
+  useKeyBind(
+    ['Shift + Tab'],
     (e) => {
       e.preventDefault()
       if (selectedRow == null || selectedColumn == null) return

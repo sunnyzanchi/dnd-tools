@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@zanchi/use-key-bind": "^1.0.0",
     "preact": "^10.5.15"
   },
   "devDependencies": {
