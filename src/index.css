@@ -11,7 +11,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --c-bg: #101010;
+    --c-bg: #0d0e0c;
     --c-border: #222;
     --c-border-hover: #363636;
     --c-border-selected: #0a4673;
