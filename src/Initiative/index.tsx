@@ -121,7 +121,16 @@ const Initiative = () => {
 
   const sort = () => {
     const newRows = [...rows]
-    newRows.sort((a, b) => Number(b.initiative) - Number(a.initiative))
+    newRows.sort((a, b) => {
+      const i1 = a.initiative
+      const i2 = b.initiative
+      // push empty rows to the bottom.
+      if (Number.isNaN(i1 + i2)) return 0
+      if (Number.isNaN(i1)) return 1
+      if (Number.isNaN(i2)) return -1
+      // descending order.
+      return i2 - i1
+    })
 
     setRows(newRows)
   }
