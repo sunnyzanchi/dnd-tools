@@ -99,9 +99,12 @@ const Initiative = () => {
       return
     }
 
-    const numFilledRows = rows.filter((r) => r.initiative >= 0 && r.name).length
+    const lastFilledRowIndex =
+      rows.length -
+      1 -
+      [...rows].reverse().findIndex((r) => !Number.isNaN(r.initiative))
 
-    if (turn + 1 > numFilledRows) {
+    if (turn + 1 > lastFilledRowIndex) {
       setTurn(0)
     } else {
       setTurn(turn + 1)
