@@ -1,9 +1,9 @@
 import { Ref } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
-
-import useElementSize from 'hooks/useElementSize'
 import useKeyBind from '@zanchi/use-key-bind'
-import useStack from 'hooks/useStack'
+
+import { useElementSize, useStack } from 'src/hooks'
+
 import Header from './Header'
 import Row, { COLUMNS } from './Row'
 import { createRows } from './utils'

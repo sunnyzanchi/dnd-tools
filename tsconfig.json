@@ -14,13 +14,13 @@
     "moduleResolution": "Node",
     "noEmit": true,
     "paths": {
-      "hooks/*": ["src/hooks/*"]
+      "src/*": ["src/*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": false,
     "strict": true,
     "target": "ESNext",
-    "useDefineForClassFields": true,
+    "useDefineForClassFields": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
