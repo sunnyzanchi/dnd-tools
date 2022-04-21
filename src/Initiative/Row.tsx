@@ -1,7 +1,8 @@
-import EditableCell, { Cell } from './EditableCell'
-import { Selectable, Updateable } from '../types'
+import cx from 'classnames'
 
-export const COLUMNS: (keyof Row)[] = ['initiative', 'name', 'hp', 'notes']
+import EditableCell, { Cell } from './EditableCell'
+
+const COLUMNS: (keyof Row)[] = ['initiative', 'name', 'hp', 'notes']
 
 type Row = {
   hp: number
@@ -10,17 +11,30 @@ type Row = {
   notes: string
 }
 
-type Props = {
+type Props = Row & {
+  editingCell?: number
   isTurn: boolean
-} & Row &
-  Selectable<Row> &
-  Updateable<Row>
+  /**
+   * `column` here is which cell in the row has been selected.
+   * pass null to deselect.
+   */
+  onSelect: (column: number | null) => void
+  onUpdate: (updated: Row) => void
+  selections: Set<number>
+}
 
-const Row = ({ isTurn, onSelect, onUpdate, selected, ...data }: Props) => {
+const Row = ({
+  editingCell,
+  isTurn,
+  onSelect,
+  onUpdate,
+  selections,
+  ...data
+}: Props) => {
   const select =
     (column: number) =>
     (deselect = false) =>
-      deselect ? onSelect() : onSelect(column)
+      deselect ? onSelect(null) : onSelect(column)
 
   const update = (prop: keyof Row) => (newValue: Cell['value']) => {
     onUpdate({
@@ -30,14 +44,15 @@ const Row = ({ isTurn, onSelect, onUpdate, selected, ...data }: Props) => {
   }
 
   return (
-    <li class={`row ${isTurn && 'is-turn'}`}>
-      {COLUMNS.map((column, i) => (
+    <li class={cx('row', { isTurn })}>
+      {COLUMNS.map((columnName, i) => (
         <EditableCell
-          key={column}
+          editing={i === editingCell}
+          key={columnName}
           onSelect={select(i)}
-          onUpdate={update(column)}
-          selected={selected === i}
-          value={data[column]}
+          onUpdate={update(columnName)}
+          selected={selections.has(i)}
+          value={data[columnName]}
         />
       ))}
     </li>

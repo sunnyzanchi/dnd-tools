@@ -1,7 +1,7 @@
+import cx from 'classnames'
+
 import { FunctionComponent as FC, JSX } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
-
-import useClickOutside from 'hooks/useClickOutside'
 
 const MINUS = '\u2212'
 
@@ -15,8 +15,12 @@ type CellValue = Cell['value']
 
 type Props = Cell & {
   /**
-   * pass `true` to the callback to deselect
-   * the current cell.
+   * this determines if the input box shows up,
+   * so it should only be true on the last cell of a multiselection.
+   */
+  editing: boolean
+  /**
+   * pass `true` to the callback to deselect the current cell.
    */
   onSelect: (deselect?: boolean) => void
   onUpdate: (value: CellValue) => void
@@ -100,7 +104,13 @@ const formatInput = (value: CellValue) => {
   return value
 }
 
-const EditableCell: FC<Props> = ({ onSelect, onUpdate, selected, value }) => {
+const EditableCell: FC<Props> = ({
+  editing,
+  onSelect,
+  onUpdate,
+  selected,
+  value,
+}) => {
   const cell = useRef<HTMLDivElement>(null)
   const input = useRef<HTMLInputElement>(null)
   const [newValue, setNewValue] = useState(value)
@@ -144,14 +154,20 @@ const EditableCell: FC<Props> = ({ onSelect, onUpdate, selected, value }) => {
     onUpdate(result)
   }
 
+  const select = (e: MouseEvent) => {
+    onSelect(false)
+  }
+
   return (
-    <div class="editable-cell" onClick={() => onSelect()} ref={cell}>
-      {selected && (
+    <div class={cx('editable-cell', { selected })} onClick={select} ref={cell}>
+      {editing && (
         <input
-          onBlur={() => {
-            if (value !== '' && !Number.isNaN(value)) cancel()
-            else save()
-          }}
+          // TODO: this breaks multiselect functionality,
+          // but not having it breaks clicking outside the cell to deselect. 🙃
+          // onBlur={() => {
+          //   if (value !== '' && !Number.isNaN(value)) cancel()
+          //   else save()
+          // }}
           onInput={handleInput}
           onKeyDown={handleKeys}
           ref={input}

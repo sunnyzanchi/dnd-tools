@@ -1,3 +1,5 @@
+import { Selection } from 'src/hooks/useSelections'
+
 export const createRow = () => ({
   hp: NaN,
   initiative: NaN,
@@ -13,4 +15,19 @@ export const createRows = (n: number) => {
   }
 
   return rows
+}
+
+export const fillSelection = (
+  [firstRow, firstColumn]: Selection,
+  [lastRow, lastColumn]: Selection
+): Selection[] => {
+  const newSelections = []
+
+  for (let i = firstRow; i <= lastRow; i += 1) {
+    for (let j = firstColumn; j <= lastColumn; j += 1) {
+      newSelections.push([i, j] as Selection)
+    }
+  }
+
+  return newSelections
 }

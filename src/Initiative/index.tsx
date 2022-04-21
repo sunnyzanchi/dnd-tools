@@ -1,12 +1,19 @@
+import empty from 'just-is-empty'
+import last from 'just-last'
 import { Ref } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import useKeyBind from '@zanchi/use-key-bind'
 
-import { useElementSize, useStack } from 'src/hooks'
+import {
+  useElementSize,
+  useKeyIsPressed,
+  useSelections,
+  useStack,
+} from 'src/hooks'
 
 import Header from './Header'
-import Row, { COLUMNS } from './Row'
-import { createRows } from './utils'
+import Row from './Row'
+import { createRows, fillSelection } from './utils'
 import './initiative.css'
 
 const ROW_HEIGHT = 60 // px
@@ -15,12 +22,22 @@ type HistoryEntry = [index: number, prevRow: Row, newRow: Row]
 
 const Initiative = () => {
   const [rows, setRows] = useState<Row[]>([])
-  const [[selectedRow, selectedColumn], setSelected] = useState<
-    Partial<[number, number]>
-  >([undefined, undefined])
   const [turn, setTurn] = useState<number | null>(null)
+  const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
+  const shiftSelecting = useKeyIsPressed(['Shift'])
+  const [
+    selections,
+    {
+      add: addSelection,
+      clear: clearSelections,
+      getColumns: getSelectedColumns,
+      set: setSelections,
+    },
+  ] = useSelections()
   const stack = useStack<HistoryEntry>()
   const [sizeRef, , height] = useElementSize()
+
+  const [lastRow, lastColumn] = last(selections) ?? [NaN, NaN]
 
   // TODO: set up a better interface around the stack and `rows` state.
   // as is, this works fine to undo single cell changes,
@@ -48,49 +65,43 @@ const Initiative = () => {
   useKeyBind(
     ['Enter'],
     () => {
-      if (selectedRow == null || selectedColumn == null) return
+      if (empty(selections)) return
 
-      select(selectedRow + 1)(selectedColumn)
+      setSelections([[lastRow + 1, lastColumn]])
     },
-    [selectedRow, selectedColumn]
+    [selections]
   )
 
   useKeyBind(
     ['Shift + Enter'],
     () => {
-      if (selectedRow == null || selectedColumn == null) return
+      if (empty(selections)) return
 
-      select(selectedRow - 1)(selectedColumn)
+      setSelections([[lastRow - 1, lastColumn]])
     },
-    [selectedRow, selectedColumn]
+    [selections]
   )
 
   useKeyBind(
     ['Tab'],
     (e) => {
       e.preventDefault()
-      if (selectedRow == null || selectedColumn == null) return
+      if (empty(selections)) return
 
-      const column =
-        selectedColumn + 1 > COLUMNS.length - 1 ? 0 : selectedColumn + 1
-      const row = selectedColumn + 1 > COLUMNS.length - 1 ? 1 : 0
-      select(selectedRow + row)(column)
+      setSelections([[lastRow, lastColumn + 1]])
     },
-    [selectedRow, selectedColumn]
+    [selections]
   )
 
   useKeyBind(
     ['Shift + Tab'],
     (e) => {
       e.preventDefault()
-      if (selectedRow == null || selectedColumn == null) return
+      if (empty(selections)) return
 
-      const column =
-        selectedColumn - 1 < 0 ? COLUMNS.length - 1 : selectedColumn - 1
-      const row = selectedColumn - 1 < 0 ? -1 : 0
-      select(selectedRow + row)(column)
+      setSelections([[lastRow, lastColumn - 1]])
     },
-    [selectedRow, selectedColumn]
+    [selections]
   )
 
   const nextTurn = () => {
@@ -111,12 +122,27 @@ const Initiative = () => {
     }
   }
 
-  const select = (row: number) => (column?: number) => {
-    if (column == null) {
-      setSelected([undefined, undefined])
-    } else {
-      setSelected([row, column])
+  const select = (row: number) => (column: number | null) => {
+    // deselecting
+    if (column == null) return clearSelections()
+
+    // discrete multi selecting
+    if (cmdSelecting) return addSelection([row, column])
+
+    const firstSelection = selections[0]
+    // in between multi selecting
+    if (shiftSelecting && firstSelection != null) {
+      const newLastSelection: [number, number] = [row, column]
+      const inBetweenSelections = fillSelection(
+        firstSelection,
+        newLastSelection
+      )
+      const newSelections = [...selections, ...inBetweenSelections]
+      return setSelections(newSelections)
     }
+
+    // single selecting
+    setSelections([[row, column]])
   }
 
   const sort = () => {
@@ -152,11 +178,12 @@ const Initiative = () => {
             {...r}
             isTurn={turn === i}
             key={i}
+            editingCell={i === lastRow ? lastColumn : undefined}
             onSelect={select(i)}
             onUpdate={update(i)}
             // if we have a selected index, we should always
             // have a selected prop.
-            selected={selectedRow === i ? selectedColumn! : false}
+            selections={getSelectedColumns(i) ?? new Set()}
           />
         ))}
       </ol>
