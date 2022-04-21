@@ -81,6 +81,8 @@
 
 .editable-cell {
   align-items: center;
+  border: 1px solid transparent;
+  border-right: 1px solid var(--c-border);
   cursor: pointer;
   display: flex;
   flex-grow: 1;
@@ -90,17 +92,36 @@
   position: relative;
 }
 
-.editable-cell:focus-within {
+.editable-cell:focus-within,
+.editable-cell.selected {
   border: 1px solid var(--c-border-selected);
 }
 
-.editable-cell:hover:not(:focus-within) {
-  border: 1px solid var(--c-border-hover);
+.editable-cell:focus-within:not(:hover)::after,
+.editable-cell.selected:not(:hover)::after {
+  background: var(--c-border-selected);
+  bottom: -1px;
+  content: '';
+  height: 1px;
+  left: -1px;
+  position: absolute;
+  width: 100%;
 }
 
-.editable-cell:not(:last-of-type):not(:hover):not(:focus-within) {
-  border: 1px solid transparent;
-  border-right: 1px solid var(--c-border);
+.editable-cell:focus-within:not(:hover)::before,
+.editable-cell.selected:not(:hover)::before {
+  background: var(--c-border-selected);
+  content: '';
+  height: 100%;
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 1px;
+
+}
+
+.editable-cell:hover:not(:focus-within):not(.selected) {
+  border: 1px solid var(--c-border-hover);
 }
 
 .editable-cell input {
