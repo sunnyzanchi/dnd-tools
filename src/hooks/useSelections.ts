@@ -24,7 +24,7 @@ type Actions = {
   set: (selections: Selection[]) => void
 }
 
-const getRowSelections =
+export const getRowSelections =
   (selections: Selection[]) =>
   (row: number): Set<number> => {
     const columns = selections

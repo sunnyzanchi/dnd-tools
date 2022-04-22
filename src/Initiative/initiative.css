@@ -90,6 +90,12 @@
   margin: -1px 0 -1px -1px;
   padding: 0 5px;
   position: relative;
+  /* this is a less than ideal way to fix
+     the visual bug where shift clicking
+     to multiselect briefly selects all
+     the text in between.
+   */
+  user-select: none;
 }
 
 .editable-cell:focus-within,

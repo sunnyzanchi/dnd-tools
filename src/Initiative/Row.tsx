@@ -1,62 +1,59 @@
 import cx from 'classnames'
+import { ComponentChildren, FunctionalComponent as FC } from 'preact'
 
-import EditableCell, { Cell } from './EditableCell'
+import EditableCell, { CellValue } from './EditableCell'
 
-const COLUMNS: (keyof Row)[] = ['initiative', 'name', 'hp', 'notes']
+export const COLUMNS: (keyof RowValue)[] = ['initiative', 'name', 'hp', 'notes']
 
-type Row = {
-  hp: number
-  initiative: number
-  name: string
-  notes: string
+export type RowValue = {
+  hp: CellValue
+  initiative: CellValue
+  name: CellValue
+  notes: CellValue
 }
 
-type Props = Row & {
+export type RowDisplay = {
+  [key in keyof RowValue]: ComponentChildren
+}
+
+type Props = RowDisplay & {
+  /**
+   * column index for which cell should show the input box.
+   */
   editingCell?: number
+  /**
+   * to show the current turn marker.
+   */
   isTurn: boolean
   /**
    * `column` here is which cell in the row has been selected.
    * pass null to deselect.
    */
   onSelect: (column: number | null) => void
-  onUpdate: (updated: Row) => void
+  /**
+   * which column indices are selected.
+   */
   selections: Set<number>
 }
 
-const Row = ({
+const Row: FC<Props> = ({
   editingCell,
   isTurn,
   onSelect,
-  onUpdate,
   selections,
   ...data
-}: Props) => {
-  const select =
-    (column: number) =>
-    (deselect = false) =>
-      deselect ? onSelect(null) : onSelect(column)
-
-  const update = (prop: keyof Row) => (newValue: Cell['value']) => {
-    onUpdate({
-      ...data,
-      [prop]: newValue,
-    })
-  }
-
-  return (
-    <li class={cx('row', { isTurn })}>
-      {COLUMNS.map((columnName, i) => (
-        <EditableCell
-          editing={i === editingCell}
-          key={columnName}
-          onSelect={select(i)}
-          onUpdate={update(columnName)}
-          selected={selections.has(i)}
-          value={data[columnName]}
-        />
-      ))}
-    </li>
-  )
-}
+}) => (
+  <li class={cx('row', { isTurn })}>
+    {COLUMNS.map((columnName, i) => (
+      <EditableCell
+        editing={i === editingCell}
+        key={columnName}
+        onSelect={() => onSelect(i)}
+        selected={selections.has(i)}
+        value={data[columnName]}
+      />
+    ))}
+  </li>
+)
 
 export default Row

@@ -1,28 +1,45 @@
 import empty from 'just-is-empty'
 import last from 'just-last'
-import { Ref } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { createContext, Ref, VNode } from 'preact'
+import { useEffect, useState, useRef } from 'preact/hooks'
 import useKeyBind from '@zanchi/use-key-bind'
 
 import {
   useElementSize,
   useKeyIsPressed,
+  useOnClick,
   useSelections,
   useStack,
+  useTurn,
 } from 'src/hooks'
-
 import Header from './Header'
-import Row from './Row'
-import { createRows, fillSelection } from './utils'
+import Row, { COLUMNS, RowValue } from './Row'
+import {
+  calculateUpdate,
+  createRows,
+  fillSelection,
+  formatInput,
+  formatRow,
+} from './utils'
 import './initiative.css'
 
 const ROW_HEIGHT = 60 // px
 
-type HistoryEntry = [index: number, prevRow: Row, newRow: Row]
+type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
+
+/**
+ * when multiselecting, the input shows up wherever the last selection was.
+ * this lets an `EditableCell` decide to render the `input`
+ * when it's given `editing: true`.
+ * context here seemed natural given that the `input`
+ * can be rendered by any cell.
+ */
+export const FloatingInput = createContext<VNode | null>(null)
 
 const Initiative = () => {
-  const [rows, setRows] = useState<Row[]>([])
-  const [turn, setTurn] = useState<number | null>(null)
+  const [rows, setRows] = useState<RowValue[]>([])
+  const [turn, nextTurn] = useTurn(rows)
+  const [sizeRef, , height] = useElementSize()
   const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
   const shiftSelecting = useKeyIsPressed(['Shift'])
   const [
@@ -34,10 +51,48 @@ const Initiative = () => {
       set: setSelections,
     },
   ] = useSelections()
-  const stack = useStack<HistoryEntry>()
-  const [sizeRef, , height] = useElementSize()
-
   const [lastRow, lastColumn] = last(selections) ?? [NaN, NaN]
+  const stack = useStack<HistoryEntry>()
+
+  // these three `const`s are to support the floating input.
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [inputValue, setInputValue] = useState<number | string>('')
+  const input = (
+    <input
+      class="cell-input"
+      onInput={(e) => setInputValue(e.currentTarget.value)}
+      ref={inputRef}
+      value={formatInput(inputValue)}
+    />
+  )
+
+  // when the user selects something new,
+  // the value in the input should be whatever they last selected.
+  useEffect(() => {
+    if (Number.isNaN(lastRow)) return
+
+    const value = rows[lastRow][COLUMNS[lastColumn]]
+    setInputValue(value)
+  }, [selections])
+
+  // fill the available height of initiative tracker with empty rows.
+  useEffect(() => {
+    // -1 because of the header
+    const numRows = Math.floor(height / ROW_HEIGHT) - 1
+
+    setRows(createRows(numRows))
+  }, [height])
+
+  useEffect(() => {
+    if (!inputRef.current) return
+
+    inputRef.current?.focus()
+    // TODO: this isn't consistent.
+    // it's consistent in the conditions under which it
+    // does and doesn't work, but i don't know why
+    // it's not working when it's not.
+    inputRef.current?.select()
+  }, [selections, inputRef])
 
   // TODO: set up a better interface around the stack and `rows` state.
   // as is, this works fine to undo single cell changes,
@@ -55,21 +110,20 @@ const Initiative = () => {
   //   [stack]
   // )
 
-  useEffect(() => {
-    // -1 because of the header
-    const numRows = Math.floor(height / ROW_HEIGHT) - 1
-
-    setRows(createRows(numRows))
-  }, [height])
-
   useKeyBind(
     ['Enter'],
     () => {
       if (empty(selections)) return
 
-      setSelections([[lastRow + 1, lastColumn]])
+      // if `inputValue` only contains numbers we want to store
+      // the value as a number so we can do math with it later.
+      if (/^\d+$/.test(String(inputValue))) {
+        update(Number(inputValue))
+      } else {
+        update(inputValue)
+      }
     },
-    [selections]
+    [inputValue, selections]
   )
 
   useKeyBind(
@@ -104,52 +158,51 @@ const Initiative = () => {
     [selections]
   )
 
-  const nextTurn = () => {
-    if (turn == null) {
-      setTurn(0)
+  useOnClick((e) => {
+    // if we're clicking on another cell, we might be multi-selecting.
+    // otherwise, the user has clicked outside the initiative tracker
+    // and we should clear selections and stop showing the input box.
+    const el = e.target as HTMLElement
+    if (
+      el?.classList?.contains('editable-cell') ||
+      el?.classList?.contains('cell-input')
+    )
       return
-    }
 
-    const lastFilledRowIndex =
-      rows.length -
-      1 -
-      [...rows].reverse().findIndex((r) => !Number.isNaN(r.initiative))
+    clearSelections()
+  }, [])
 
-    if (turn + 1 > lastFilledRowIndex) {
-      setTurn(0)
-    } else {
-      setTurn(turn + 1)
-    }
-  }
-
-  const select = (row: number) => (column: number | null) => {
+  const select = (rowIndex: number) => (columnIndex: number | null) => {
     // deselecting
-    if (column == null) return clearSelections()
+    if (columnIndex == null) return clearSelections()
 
     // discrete multi selecting
-    if (cmdSelecting) return addSelection([row, column])
+    if (cmdSelecting) return addSelection([rowIndex, columnIndex])
 
-    const firstSelection = selections[0]
     // in between multi selecting
+    const firstSelection = selections[0]
     if (shiftSelecting && firstSelection != null) {
-      const newLastSelection: [number, number] = [row, column]
+      const newLastSelection: [number, number] = [rowIndex, columnIndex]
       const inBetweenSelections = fillSelection(
         firstSelection,
         newLastSelection
       )
-      const newSelections = [...selections, ...inBetweenSelections]
+      // `fillSelection` returns a new list of selections,
+      // but it includes the first existing selection.
+      // without slicing, we would double select the first cell.
+      const newSelections = [...selections.slice(1), ...inBetweenSelections]
       return setSelections(newSelections)
     }
 
     // single selecting
-    setSelections([[row, column]])
+    setSelections([[rowIndex, columnIndex]])
   }
 
   const sort = () => {
     const newRows = [...rows]
     newRows.sort((a, b) => {
-      const i1 = a.initiative
-      const i2 = b.initiative
+      const i1 = a.initiative as number
+      const i2 = b.initiative as number
       // push empty rows to the bottom.
       if (Number.isNaN(i1 + i2)) return 0
       if (Number.isNaN(i1)) return 1
@@ -161,36 +214,44 @@ const Initiative = () => {
     setRows(newRows)
   }
 
-  const update = (index: number) => (value: Row) => {
+  const update = (value: string | number) => {
     const newRows = [...rows]
-    stack.push([index, rows[index], value])
-    newRows[index] = value
+
+    selections.forEach(([rowIndex, columnIndex]) => {
+      const columnName = COLUMNS[columnIndex]
+      const row = newRows[rowIndex]
+      const currentValue = row[columnName]
+      row[columnName] = calculateUpdate(currentValue, value)
+    })
 
     setRows(newRows)
+    setSelections([[lastRow + 1, lastColumn]])
   }
 
   return (
-    <div class="initiative">
-      <ol class="rows" ref={sizeRef as Ref<HTMLOListElement>}>
-        <Header onSort={sort} />
-        {rows.map((r, i) => (
-          <Row
-            {...r}
-            isTurn={turn === i}
-            key={i}
-            editingCell={i === lastRow ? lastColumn : undefined}
-            onSelect={select(i)}
-            onUpdate={update(i)}
-            // if we have a selected index, we should always
-            // have a selected prop.
-            selections={getSelectedColumns(i) ?? new Set()}
-          />
-        ))}
-      </ol>
-      <button class="next" onClick={nextTurn}>
-        {turn != null ? 'Next' : 'Start'}
-      </button>
-    </div>
+    <FloatingInput.Provider value={input}>
+      <div class="initiative">
+        <ol class="rows" ref={sizeRef as Ref<HTMLOListElement>}>
+          <Header onSort={sort} />
+          {rows.map(formatRow(selections, inputValue)).map((r, i) => (
+            <Row
+              {...(r as RowValue)}
+              isTurn={turn === i}
+              key={i}
+              editingCell={i === lastRow ? lastColumn : undefined}
+              onSelect={select(i)}
+              // if we have at least one selected row,
+              // we should always have at least one selected column.
+              selections={getSelectedColumns(i) ?? new Set()}
+            />
+          ))}
+        </ol>
+
+        <button class="next" onClick={nextTurn}>
+          {turn != null ? 'Next' : 'Start'}
+        </button>
+      </div>
+    </FloatingInput.Provider>
   )
 }
 
