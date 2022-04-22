@@ -17,6 +17,9 @@ const MINUS = '\u2212'
  *
  * ```
  * calculateUpdate(10, '+3') // returns 13
+ * calculateUpdate(10, '+') // returns 10
+ * calculateUpdate('Test', '+3') // returns 'Test'
+ * calculatUpdate('Test', '3') // returns 3
  *
  * ```
  */
@@ -25,18 +28,30 @@ export const calculateUpdate = (
   newValue: CellValue
 ): CellValue => {
   if (value === newValue) return value
-  // if we don't have any numbers, we're not doing any math.
-  if (/[a-z]/i.test(String(newValue))) return newValue
 
+  const valueIsNumeric = /^\d+$/.test(String(value))
   const firstChar = String(newValue).trim()[0]
-  const numString = String(newValue).replace(/[^0-9]+/g, '')
+  const newValueHasOperator = firstChar === '+' || firstChar === '-'
+  const numString = String(newValue).replace(/\D/g, '')
   const num = numString === '' ? null : Number(numString)
 
-  if (num == null) return value
+  // if we have a numeric cell but `newValue` doesn't
+  // have a number, we can't do an operation,
+  // so just return the old value.
+  if (valueIsNumeric && num == null) return value
 
-  if (firstChar === '+') return Number(value) + num
-  if (firstChar === '-') return Number(value) - num
+  // if we have a numeric cell and `newValue`
+  // has a number, return the result of the operation.
+  if (valueIsNumeric && num != null) {
+    if (firstChar === '+') return Number(value) + num
+    if (firstChar === '-') return Number(value) - num
+  }
 
+  // if we don't have a numeric cell, we're not doing any math.
+  // non-numeric cells can ignore shorthand operator updates.
+  if (!valueIsNumeric && newValueHasOperator) return value
+
+  // anything else will just overwrite the cell
   return newValue
 }
 
@@ -110,7 +125,8 @@ export const formatCell = (
   value: CellValue,
   inputValue?: CellValue | null
 ): CellDisplay => {
-  if (Number.isNaN(value) || inputValue == null) return formatStaticCell(value)
+  if (!/^\d+$/.test(String(value)) || Number.isNaN(value) || inputValue == null)
+    return formatStaticCell(value)
   if (value === inputValue) return value
 
   const firstChar = String(inputValue).trim()[0]
