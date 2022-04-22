@@ -35,7 +35,7 @@
   position: relative;
 }
 
-.row.is-turn::after {
+.row.isTurn::after {
   background: var(--c-text-decrease);
   content: '';
   height: 100%;
