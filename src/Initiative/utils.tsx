@@ -166,7 +166,10 @@ export const formatRow =
     const propSelections = getPropSelections(selections, index)
 
     return oMap(row, (prop, value) =>
-      formatCell(value, propSelections[prop] ? inputValue : null)
+      formatCell(
+        value,
+        propSelections[prop as keyof RowValue] ? inputValue : null
+      )
     ) as RowDisplay
   }
 
