@@ -235,7 +235,10 @@ const Initiative = () => {
       const columnName = COLUMNS[columnIndex]
       const row = newRows[rowIndex]
       const currentValue = row[columnName]
-      row[columnName] = calculateUpdate(currentValue, value)
+      newRows[rowIndex] = {
+        ...row,
+        [columnName]: calculateUpdate(currentValue, value),
+      }
     })
 
     setRows(newRows)
