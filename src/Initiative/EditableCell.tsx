@@ -23,7 +23,14 @@ const EditableCell: FC<Props> = ({ editing, onSelect, selected, value }) => {
 
   return (
     <div class={cx('editable-cell', { selected })} onClick={onSelect}>
-      {value}
+      {/* this wrapping fragment is to prevent a backspace bug. */}
+      {/* without it, backspacing after typing a shorthand update, */}
+      {/* like '+3' > Backspace > '+', causes the input to deselect. */}
+      {/* i think this is due to a reconcilation mistake */}
+      {/* since `value` here switches from a VNode */}
+      {/* to a number, and Preact gets confused. */}
+      {/* wrapping in a fragment helps Preact update it correctly. */}
+      <>{value}</>
       {editing && input}
     </div>
   )
