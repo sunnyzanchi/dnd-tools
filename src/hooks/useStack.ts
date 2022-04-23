@@ -1,12 +1,20 @@
 import { useState } from 'preact/hooks'
 
+type Actions<T> = {
+  clear: () => void
+  push: (item: T) => void
+  pop: () => T
+}
+
 /**
  * a stack
  * @param initial initial state
  * @param limit how many items to store
  */
-const useStack = <T>(initial?: T[], limit = 50) => {
+const useStack = <T>(initial?: T[], limit = 50): [T[], Actions<T>] => {
   const [stack, setStack] = useState<T[]>(initial ?? [])
+
+  const clear = () => setStack([])
 
   const push = (value: T) => {
     if (stack.length < limit) {
@@ -23,7 +31,7 @@ const useStack = <T>(initial?: T[], limit = 50) => {
     return result
   }
 
-  return { push, pop }
+  return [stack, { clear, push, pop }]
 }
 
 export default useStack
