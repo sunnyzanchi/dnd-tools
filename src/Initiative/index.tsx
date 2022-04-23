@@ -67,7 +67,7 @@ const Initiative = () => {
   )
 
   // when the user selects something new,
-  // the value in the input should be whatever they last selected.
+  // the value in the input should be whatever they just selected.
   useEffect(() => {
     if (Number.isNaN(lastRow)) return
 
@@ -92,7 +92,7 @@ const Initiative = () => {
     // does and doesn't work, but i don't know why
     // it's not working when it's not.
     inputRef.current?.select()
-  }, [selections, inputRef])
+  }, [selections, inputRef.current])
 
   // TODO: set up a better interface around the stack and `rows` state.
   // as is, this works fine to undo single cell changes,
@@ -122,6 +122,8 @@ const Initiative = () => {
       } else {
         update(inputValue)
       }
+
+      navigate('down')
     },
     [inputValue, selections]
   )
@@ -131,7 +133,7 @@ const Initiative = () => {
     () => {
       if (empty(selections)) return
 
-      setSelections([[lastRow - 1, lastColumn]])
+      navigate('up')
     },
     [selections]
   )
@@ -142,7 +144,7 @@ const Initiative = () => {
       e.preventDefault()
       if (empty(selections)) return
 
-      setSelections([[lastRow, lastColumn + 1]])
+      navigate('right')
     },
     [selections]
   )
@@ -153,7 +155,7 @@ const Initiative = () => {
       e.preventDefault()
       if (empty(selections)) return
 
-      setSelections([[lastRow, lastColumn - 1]])
+      navigate('left')
     },
     [selections]
   )
@@ -171,6 +173,18 @@ const Initiative = () => {
 
     clearSelections()
   }, [])
+
+  const navigate = (direction: 'up' | 'down' | 'left' | 'right') => {
+    ;({
+      down: () => setSelections([[lastRow + 1, lastColumn]]),
+      left: () => setSelections([[lastRow, lastColumn - 1]]),
+      right: () => setSelections([[lastRow, lastColumn + 1]]),
+      up: () => setSelections([[lastRow - 1, lastColumn]]),
+    }[direction]())
+
+    // to avoid showing the `inputValue` from the previous cell.
+    setInputValue('')
+  }
 
   const select = (rowIndex: number) => (columnIndex: number | null) => {
     // deselecting
@@ -225,7 +239,6 @@ const Initiative = () => {
     })
 
     setRows(newRows)
-    setSelections([[lastRow + 1, lastColumn]])
   }
 
   return (
