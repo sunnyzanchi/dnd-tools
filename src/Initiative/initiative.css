@@ -14,7 +14,6 @@
   grid-template-rows: 1fr min-content;
   height: 100vh;
   justify-items: stretch;
-  width: 70vw;
 }
 
 .rows {
