@@ -8,8 +8,8 @@ import {
   useElementSize,
   useKeyIsPressed,
   useOnClick,
+  useRows,
   useSelections,
-  useStack,
   useTurn,
 } from 'src/hooks'
 import Header from './Header'
@@ -37,7 +37,16 @@ type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
 export const FloatingInput = createContext<VNode | null>(null)
 
 const Initiative = () => {
-  const [rows, setRows] = useState<RowValue[]>([])
+  const [
+    rows,
+    {
+      clear: clearRowHistory,
+      redo: redoRowChange,
+      set: setRows,
+      sort: sortRows,
+      undo: undoRowChange,
+    },
+  ] = useRows()
   const [turn, nextTurn] = useTurn(rows)
   const [sizeRef, , height] = useElementSize()
   const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
@@ -52,7 +61,6 @@ const Initiative = () => {
     },
   ] = useSelections()
   const [lastRow, lastColumn] = last(selections) ?? [NaN, NaN]
-  const stack = useStack<HistoryEntry>()
 
   // these three `const`s are to support the floating input.
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -80,6 +88,7 @@ const Initiative = () => {
     // -1 because of the header
     const numRows = Math.floor(height / ROW_HEIGHT) - 1
 
+    clearRowHistory()
     setRows(createRows(numRows))
   }, [height])
 
@@ -94,21 +103,10 @@ const Initiative = () => {
     inputRef.current?.select()
   }, [selections, inputRef.current])
 
-  // TODO: set up a better interface around the stack and `rows` state.
-  // as is, this works fine to undo single cell changes,
-  // but starts to get fucky if you try to undo after sorting.
-  //
-  // useKeybind(
-  //   'Cmd + Z',
-  //   () => {
-  //     const [i, previous] = stack.pop()
-  //     const newRows = [...rows]
-  //     newRows[i] = previous
-
-  //     setRows(newRows)
-  //   },
-  //   [stack]
-  // )
+  useKeyBind(['Cmd + Z', 'Ctrl + Z'], undoRowChange, [undoRowChange])
+  useKeyBind(['Cmd + Shift + Z', 'Ctrl + Shift + Z'], redoRowChange, [
+    redoRowChange,
+  ])
 
   useKeyBind(
     ['Enter'],
@@ -212,23 +210,9 @@ const Initiative = () => {
     setSelections([[rowIndex, columnIndex]])
   }
 
-  const sort = () => {
-    const newRows = [...rows]
-    newRows.sort((a, b) => {
-      const i1 = a.initiative as number
-      const i2 = b.initiative as number
-      // push empty rows to the bottom.
-      if (Number.isNaN(i1 + i2)) return 0
-      if (Number.isNaN(i1)) return 1
-      if (Number.isNaN(i2)) return -1
-      // descending order.
-      return i2 - i1
-    })
-
-    setRows(newRows)
-  }
-
   const update = (value: string | number) => {
+    // this avoids putting empty changes into the row history.
+    if (value === '' || Number.isNaN(value)) return
     const newRows = [...rows]
 
     selections.forEach(([rowIndex, columnIndex]) => {
@@ -248,7 +232,7 @@ const Initiative = () => {
     <FloatingInput.Provider value={input}>
       <div class="initiative">
         <ol class="rows" ref={sizeRef as Ref<HTMLOListElement>}>
-          <Header onSort={sort} />
+          <Header onSort={sortRows} />
           {rows.map(formatRow(selections, inputValue)).map((r, i) => (
             <Row
               {...(r as RowValue)}
