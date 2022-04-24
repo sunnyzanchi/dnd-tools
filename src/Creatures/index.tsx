@@ -72,10 +72,9 @@ const Creatures = () => {
     filteredCreatures = creatures.filter((creature) => {
       const lowercaseCreature = kMap(creature, (v, k) =>
         String(k).toLowerCase()
-      )
+      ) as Creature
 
-      const value = lowercaseCreature[key as keyof Creature]
-      console.log(value, searchValue)
+      const value = lowercaseCreature[key as keyof Creature] as string
       return value?.includes(searchValue)
     })
   } else {

@@ -12,18 +12,12 @@ type Trait = {
 }
 
 type Props = {
-  actions?: {
-    description: string
-    name: string
-  }[]
+  actions?: Trait[]
   abilityScores: AbilityScores
   alignment: string
   legendaryActions?: {
     startText: string
-    actions: {
-      description: string
-      name: string
-    }[]
+    actions: Trait[]
   }
   name: string
   physicalTraits: {
@@ -49,7 +43,7 @@ type Props = {
   onSelect: () => unknown
 }
 
-const Trait = ({ description, name }) => (
+const TraitLine = ({ description, name }: Trait) => (
   <p class="creature-trait">
     <span>{name} </span>
     {description}
@@ -107,7 +101,7 @@ const ExpandedItem: FC<Props> = ({
           <hr />
           <div class="creature-traits">
             {traits.map((trait) => (
-              <Trait {...trait} />
+              <TraitLine {...trait} />
             ))}
           </div>
         </>
@@ -119,7 +113,7 @@ const ExpandedItem: FC<Props> = ({
           <div class="creature-actions">
             <h3>Actions</h3>
             {actions!.map((action) => (
-              <Trait {...action} />
+              <TraitLine {...action} />
             ))}
           </div>
         </>
@@ -130,7 +124,7 @@ const ExpandedItem: FC<Props> = ({
           <h3>Legendary Actions</h3>
           <p class="creature-trait">{legendaryActions!.startText}</p>
           {legendaryActions!.actions.map((la) => (
-            <Trait {...la} />
+            <TraitLine {...la} />
           ))}
         </div>
       )}
