@@ -25,8 +25,6 @@ import './initiative.css'
 
 const ROW_HEIGHT = 60 // px
 
-type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
-
 /**
  * when multiselecting, the input shows up wherever the last selection was.
  * this lets an `EditableCell` decide to render the `input`
@@ -51,6 +49,7 @@ const Initiative = () => {
   const [sizeRef, , height] = useElementSize()
   const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
   const shiftSelecting = useKeyIsPressed(['Shift'])
+  const initiativeContainer = useRef<HTMLDivElement | null>(null)
   const [
     selections,
     {
@@ -139,7 +138,8 @@ const Initiative = () => {
   useKeyBind(
     ['Tab'],
     (e) => {
-      e.preventDefault()
+      if (initiativeContainer.current?.contains(document.activeElement))
+        e.preventDefault()
       if (empty(selections)) return
 
       navigate('right')
@@ -150,7 +150,8 @@ const Initiative = () => {
   useKeyBind(
     ['Shift + Tab'],
     (e) => {
-      e.preventDefault()
+      if (initiativeContainer.current?.contains(document.activeElement))
+        e.preventDefault()
       if (empty(selections)) return
 
       navigate('left')
@@ -230,7 +231,7 @@ const Initiative = () => {
 
   return (
     <FloatingInput.Provider value={input}>
-      <div class="initiative">
+      <div class="initiative" ref={initiativeContainer}>
         <ol class="rows" ref={sizeRef as Ref<HTMLOListElement>}>
           <Header onSort={sortRows} />
           {rows.map(formatRow(selections, inputValue)).map((r, i) => (

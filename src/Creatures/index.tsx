@@ -5,10 +5,13 @@ import oMap from 'just-map-object'
 import kMap from 'just-map-keys'
 import pick from 'just-pick'
 import { matchSorter } from 'match-sorter'
+import { Ref } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
-import './creatures.css'
+import Create from './Create'
+import styles from './Creatures.module.scss'
 import ExpandedItem from './ExpandedItem'
+import { useBool, useHasFocus } from 'src/hooks'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
 
@@ -25,7 +28,7 @@ const abilityScores: (creature: Creature) => AbilityScores = compose(
 const parseMeta = (
   creature: Creature
 ): [CreatureSize, CreatureType, string] => {
-  const [sizeAndType, alignment] = creature.meta.split(',')
+  const [sizeAndType, alignment] = creature?.meta?.split(',') ?? ['', '']
   const [size, ...type] = sizeAndType.split(' ')
 
   return [
@@ -52,13 +55,16 @@ const shortTraits = (creature: Creature) =>
 const physicalTraits = (creature: Creature) =>
   pick(creature, ['Armor Class', 'Hit Points', 'Speed'])
 
-const Loading = () => <div class="creature-list-loading">Loading</div>
+const Loading = () => <div class={styles.loading}>Loading</div>
 
 const Creatures = () => {
-  const creatures = useCreatures()
+  const [creatures, { add: addCreature }] = useCreatures()
+  const [creating, { toggle: toggleCreating }] = useBool(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selected, setSelected] = useState<number | null>(null)
+  const [listRef, listFocused] = useHasFocus()
+
   useEffect(() => {
     setSelected(null)
   }, [searchTerm])
@@ -99,6 +105,8 @@ const Creatures = () => {
   useKeyBind(
     ['Enter'],
     () => {
+      if (!listFocused) return
+
       if (filteredCreatures.length > 0) {
         const result = filteredCreatures[0].name
         // we're hitting enter from the input
@@ -118,10 +126,17 @@ const Creatures = () => {
   useKeyBind(['ArrowUp'], selectPrev, [setSelected])
 
   const deselect = () => setExpanded('')
+  const save = (creature: Creature) => {
+    const existing = JSON.parse(localStorage.getItem('creatures') ?? '[]')
+    existing.push(creature)
+    localStorage.setItem('creatures', JSON.stringify(existing))
+
+    addCreature(creature)
+  }
   const select = (name: string) => () => setExpanded(name)
 
   const creatureList = (
-    <ol class="creature-list">
+    <ol class={styles.creatures}>
       {filteredCreatures.map((c, i) => {
         if (expanded === c.name) {
           return (
@@ -131,7 +146,7 @@ const Creatures = () => {
               alignment={alignment(c)}
               legendaryActions={c['Legendary Actions']}
               name={c.name}
-              onSelect={deselect}
+              onCollapse={deselect}
               physicalTraits={physicalTraits(c)}
               selected={selected === i}
               shortTraits={shortTraits(c)}
@@ -144,12 +159,13 @@ const Creatures = () => {
 
         return (
           <li
-            class={cx('creature-list-item', { selected: selected === i })}
+            class={cx(styles.listItem, { selected: selected === i })}
             key={c.name}
+            ref={listRef as Ref<HTMLLIElement>}
             onClick={select(c.name)}
           >
-            <h2 class="creature-name">{c.name}</h2>
-            <p class="creature-type">({type(c)})</p>
+            <h2 class={styles.name}>{c.name}</h2>
+            <p class={styles.type}>({type(c)})</p>
           </li>
         )
       })}
@@ -157,20 +173,24 @@ const Creatures = () => {
   )
 
   return (
-    <div class="creatures">
+    <section class={styles.container}>
       <header>
         <h1>Creatures</h1>
         <input
-          class="search"
+          class={styles.search}
           onInput={(e) => setSearchTerm(e.currentTarget.value)}
           placeholder="Search"
           value={searchTerm}
         />
-        <button class="add-creature">add creature</button>
+        <button class={styles.addCreature} onClick={toggleCreating}>
+          add
+        </button>
       </header>
-
-      {creatures.length === 0 ? <Loading /> : creatureList}
-    </div>
+      <div class={styles.scrollableArea}>
+        {creating && <Create onSave={save} />}
+        {creatures.length === 0 ? <Loading /> : creatureList}
+      </div>
+    </section>
   )
 }
 

@@ -2,18 +2,18 @@ import cx from 'classnames'
 import empty from 'just-is-empty'
 import { FunctionalComponent as FC } from 'preact'
 
-import AbilityScoresDisplay from './AbilityScoresDisplay'
-import { AbilityScores, CreatureSize, CreatureType } from './types'
-import './ExpandedItem.css'
-
-type Trait = {
-  description: string
-  name: string
-}
+import AbilityScores from './AbilityScores'
+import {
+  AbilityScores as AbScores,
+  CreatureSize,
+  CreatureType,
+  Trait,
+} from './types'
+import styles from './ExpandedItem.module.scss'
 
 type Props = {
   actions?: Trait[]
-  abilityScores: AbilityScores
+  abilityScores: AbScores
   alignment: string
   legendaryActions?: {
     startText: string
@@ -40,11 +40,11 @@ type Props = {
   size: CreatureSize
   type: CreatureType
   traits: Trait[]
-  onSelect: () => unknown
+  onCollapse: () => unknown
 }
 
 const TraitLine = ({ description, name }: Trait) => (
-  <p class="creature-trait">
+  <p class={styles.trait}>
     <span>{name} </span>
     {description}
   </p>
@@ -56,7 +56,7 @@ const ExpandedItem: FC<Props> = ({
   alignment,
   legendaryActions,
   name,
-  onSelect,
+  onCollapse,
   physicalTraits,
   selected,
   shortTraits,
@@ -65,68 +65,74 @@ const ExpandedItem: FC<Props> = ({
   type,
 }) => {
   return (
-    <li
-      class={cx('creature-list-item --expanded', { selected })}
-      key={name}
-      onClick={onSelect}
-    >
-      <h2 class="creature-name">{name}</h2>
-      <button class="add-creature-to-initiative">add to initiative</button>
-      <p class="creature-size-type">
-        {size} {type}, {alignment}
-      </p>
+    <li class={cx(styles.listItem, { selected })} key={name}>
+      <div class={styles.titleGroup} onClick={onCollapse}>
+        <h2 class={styles.name}>{name}</h2>
+        <div class={styles.buttonGroup}>
+          <button class={styles.addToInitiative}>add</button>
+          {/* <button class="collapse" onClick={onCollapse}>
+            col
+          </button> */}
+        </div>
+        <p class={styles.sizeType}>
+          {size} {type}, {alignment}
+        </p>
+      </div>
 
-      <div class="creature-short-traits">
+      <section class={styles.shortTraits}>
         {Object.entries(physicalTraits).map(([name, value]) => (
-          <p class="creature-trait">
+          <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
         ))}
-      </div>
+      </section>
 
-      <AbilityScoresDisplay {...abilityScores} />
+      <AbilityScores {...abilityScores} />
 
-      <div class="creature-short-traits">
+      <section class={styles.shortTraits}>
         {Object.entries(shortTraits).map(([name, value]) => (
-          <p class="creature-trait">
+          <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
         ))}
-      </div>
+      </section>
 
       {!empty(traits) && (
         <>
           <hr />
-          <div class="creature-traits">
+          <section class={styles.traits}>
             {traits.map((trait) => (
               <TraitLine {...trait} />
             ))}
-          </div>
+          </section>
         </>
       )}
 
       {!empty(actions) && (
         <>
           <hr />
-          <div class="creature-actions">
+          <section class={styles.actions}>
             <h3>Actions</h3>
             {actions!.map((action) => (
               <TraitLine {...action} />
             ))}
-          </div>
+          </section>
         </>
       )}
 
       {!empty(legendaryActions) && (
-        <div className="creature-legendary-actions">
-          <h3>Legendary Actions</h3>
-          <p class="creature-trait">{legendaryActions!.startText}</p>
-          {legendaryActions!.actions.map((la) => (
-            <TraitLine {...la} />
-          ))}
-        </div>
+        <>
+          <hr />
+          <section className={styles.legendaryActions}>
+            <h3>Legendary Actions</h3>
+            <p class={styles.trait}>{legendaryActions!.startText}</p>
+            {legendaryActions!.actions.map((la) => (
+              <TraitLine {...la} />
+            ))}
+          </section>
+        </>
       )}
     </li>
   )

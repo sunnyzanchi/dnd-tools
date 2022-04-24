@@ -1,9 +1,12 @@
 :root {
-  --c-bg: #fff;
+  --c-bg: #fbfbfb;
   --c-border: #cdcdcd;
+  --c-border-contrast: #161616;
   --c-border-hover: #9c9c9c;
+  --c-border-prominent: #444444;
   --c-border-selected: #49aaf5;
-  --c-border-thick: #ddd;
+  --c-border-thick: #d0d0d0;
+  --c-input-active: #4e95ff;
   --c-text: #161616;
   --c-text: #323232;
   --c-text-increase: #075dcc;
@@ -15,9 +18,12 @@
     --c-bg: #0d0e0c;
     --c-bg-hover: #121310;
     --c-border: #222;
+    --c-border-contrast: #a4a4a4;
+    --c-border-prominent: #646464;
     --c-border-hover: #363636;
     --c-border-selected: #0a4673;
     --c-border-thick: #171717;
+    --c-input-active: #1c6ce8;
     --c-text: #ececec;
     --c-text-secondary: #ccc;
     --c-text-increase: #347ddb;
@@ -32,17 +38,24 @@ body {
   padding: 0;
   margin: 0;
   background: var(--c-bg);
-  font-family: 'Helvetica Neue', arial, sans-serif;
+  font-family: 'Open Sans', 'Helvetica', Arial, ui-sans-serif, sans-serif;
   font-size: 24px;
   font-weight: 400;
   color: var(--c-text);
 }
 
 button,
-input {
+input,
+textarea {
   font-family: 'Helvetica Neue', arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Literata', serif;
 }
