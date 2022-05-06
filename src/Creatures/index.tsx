@@ -52,7 +52,7 @@ const shortTraits = (creature: Creature) =>
 const physicalTraits = (creature: Creature) =>
   pick(creature, ['Armor Class', 'Hit Points', 'Speed'])
 
-const Loading = () => <div class="creature-list-loading">Loading</div>
+const Loading = () => <div class={styles.loading}>Loading</div>
 
 const Creatures = () => {
   const creatures = useCreatures()
@@ -131,7 +131,7 @@ const Creatures = () => {
               alignment={alignment(c)}
               legendaryActions={c['Legendary Actions']}
               name={c.name}
-              onSelect={deselect}
+              onCollapse={deselect}
               physicalTraits={physicalTraits(c)}
               selected={selected === i}
               shortTraits={shortTraits(c)}
@@ -157,7 +157,7 @@ const Creatures = () => {
   )
 
   return (
-    <div class={styles.container}>
+    <section class={styles.container}>
       <header>
         <h1>Creatures</h1>
         <input
@@ -166,11 +166,11 @@ const Creatures = () => {
           placeholder="Search"
           value={searchTerm}
         />
-        <button class={styles.addCreature}>add creature</button>
+        <button class={styles.addCreature}>add</button>
       </header>
 
       {creatures.length === 0 ? <Loading /> : creatureList}
-    </div>
+    </section>
   )
 }
 

@@ -3,14 +3,17 @@ import empty from 'just-is-empty'
 import { FunctionalComponent as FC } from 'preact'
 
 import AbilityScores from './AbilityScores'
-import { AbilityScores as AbScores, CreatureSize, CreatureType } from './types'
+import {
+  AbilityScores as AbScores,
+  CreatureSize,
+  CreatureType,
+} from './types'
 import styles from './ExpandedItem.module.scss'
 
 type Trait = {
   description: string
   name: string
 }
-
 type Props = {
   actions?: Trait[]
   abilityScores: AbScores
@@ -40,7 +43,7 @@ type Props = {
   size: CreatureSize
   type: CreatureType
   traits: Trait[]
-  onSelect: () => unknown
+  onCollapse: () => unknown
 }
 
 const TraitLine = ({ description, name }: Trait) => (
@@ -56,7 +59,7 @@ const ExpandedItem: FC<Props> = ({
   alignment,
   legendaryActions,
   name,
-  onSelect,
+  onCollapse,
   physicalTraits,
   selected,
   shortTraits,
@@ -65,68 +68,74 @@ const ExpandedItem: FC<Props> = ({
   type,
 }) => {
   return (
-    <li
-      class={cx(styles.listItem, selected && styles.selected)}
-      key={name}
-      onClick={onSelect}
-    >
-      <h2 class={styles.name}>{name}</h2>
-      <button class={styles.addToInitiative}>add to initiative</button>
-      <p class={styles.sizeType}>
-        {size} {type}, {alignment}
-      </p>
+    <li class={cx(styles.listItem, { selected })} key={name}>
+      <div class={styles.titleGroup} onClick={onCollapse}>
+        <h2 class={styles.name}>{name}</h2>
+        <div class={styles.buttonGroup}>
+          <button class={styles.addToInitiative}>add</button>
+          {/* <button class="collapse" onClick={onCollapse}>
+            col
+          </button> */}
+        </div>
+        <p class={styles.sizeType}>
+          {size} {type}, {alignment}
+        </p>
+      </div>
 
-      <div class={styles.shortTraits}>
+      <section class={styles.shortTraits}>
         {Object.entries(physicalTraits).map(([name, value]) => (
           <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
         ))}
-      </div>
+      </section>
 
       <AbilityScores {...abilityScores} />
 
-      <div class={styles.shortTraits}>
+      <section class={styles.shortTraits}>
         {Object.entries(shortTraits).map(([name, value]) => (
           <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
         ))}
-      </div>
+      </section>
 
       {!empty(traits) && (
         <>
           <hr />
-          <div class={styles.traits}>
+          <section class={styles.traits}>
             {traits.map((trait) => (
               <TraitLine {...trait} />
             ))}
-          </div>
+          </section>
         </>
       )}
 
       {!empty(actions) && (
         <>
           <hr />
-          <div class={styles.actions}>
+          <section class={styles.actions}>
             <h3>Actions</h3>
             {actions!.map((action) => (
               <TraitLine {...action} />
             ))}
-          </div>
+          </section>
         </>
       )}
 
       {!empty(legendaryActions) && (
-        <div class={styles.legendaryActions}>
-          <h3>Legendary Actions</h3>
-          <p class={styles.trait}>{legendaryActions!.startText}</p>
-          {legendaryActions!.actions.map((la) => (
-            <TraitLine {...la} />
-          ))}
-        </div>
+        <>
+          <hr />
+          <section className={styles.legendaryActions}>
+            <h3>Legendary Actions</h3>
+            <p class={styles.trait}>{legendaryActions!.startText}</p>
+            {legendaryActions!.actions.map((la) => (
+              <TraitLine {...la} />
+            ))}
+          </section>
+        </>
       )}
     </li>
   )
