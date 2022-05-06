@@ -4,7 +4,7 @@ import { FunctionalComponent as FC } from 'preact'
 
 import AbilityScores from './AbilityScores'
 import { AbilityScores as AbScores, CreatureSize, CreatureType } from './types'
-import './ExpandedItem.css'
+import styles from './ExpandedItem.module.scss'
 
 type Trait = {
   description: string
@@ -44,7 +44,7 @@ type Props = {
 }
 
 const TraitLine = ({ description, name }: Trait) => (
-  <p class="creature-trait">
+  <p class={styles.trait}>
     <span>{name} </span>
     {description}
   </p>
@@ -66,19 +66,19 @@ const ExpandedItem: FC<Props> = ({
 }) => {
   return (
     <li
-      class={cx('creature-list-item --expanded', { selected })}
+      class={cx(styles.listItem, selected && styles.selected)}
       key={name}
       onClick={onSelect}
     >
-      <h2 class="creature-name">{name}</h2>
-      <button class="add-creature-to-initiative">add to initiative</button>
-      <p class="creature-size-type">
+      <h2 class={styles.name}>{name}</h2>
+      <button class={styles.addToInitiative}>add to initiative</button>
+      <p class={styles.sizeType}>
         {size} {type}, {alignment}
       </p>
 
-      <div class="creature-short-traits">
+      <div class={styles.shortTraits}>
         {Object.entries(physicalTraits).map(([name, value]) => (
-          <p class="creature-trait">
+          <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
@@ -87,9 +87,9 @@ const ExpandedItem: FC<Props> = ({
 
       <AbilityScores {...abilityScores} />
 
-      <div class="creature-short-traits">
+      <div class={styles.shortTraits}>
         {Object.entries(shortTraits).map(([name, value]) => (
-          <p class="creature-trait">
+          <p class={styles.trait}>
             <span>{name}: </span>
             {value}
           </p>
@@ -99,7 +99,7 @@ const ExpandedItem: FC<Props> = ({
       {!empty(traits) && (
         <>
           <hr />
-          <div class="creature-traits">
+          <div class={styles.traits}>
             {traits.map((trait) => (
               <TraitLine {...trait} />
             ))}
@@ -110,7 +110,7 @@ const ExpandedItem: FC<Props> = ({
       {!empty(actions) && (
         <>
           <hr />
-          <div class="creature-actions">
+          <div class={styles.actions}>
             <h3>Actions</h3>
             {actions!.map((action) => (
               <TraitLine {...action} />
@@ -120,9 +120,9 @@ const ExpandedItem: FC<Props> = ({
       )}
 
       {!empty(legendaryActions) && (
-        <div className="creature-legendary-actions">
+        <div class={styles.legendaryActions}>
           <h3>Legendary Actions</h3>
-          <p class="creature-trait">{legendaryActions!.startText}</p>
+          <p class={styles.trait}>{legendaryActions!.startText}</p>
           {legendaryActions!.actions.map((la) => (
             <TraitLine {...la} />
           ))}

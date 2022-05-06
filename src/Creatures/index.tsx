@@ -7,10 +7,10 @@ import pick from 'just-pick'
 import { matchSorter } from 'match-sorter'
 import { useEffect, useState } from 'preact/hooks'
 
-import './creatures.css'
 import ExpandedItem from './ExpandedItem'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
+import styles from './Creatures.module.scss'
 
 const abilityScores: (creature: Creature) => AbilityScores = compose(
   (abilityScores) =>
@@ -121,7 +121,7 @@ const Creatures = () => {
   const select = (name: string) => () => setExpanded(name)
 
   const creatureList = (
-    <ol class="creature-list">
+    <ol class={styles.creatures}>
       {filteredCreatures.map((c, i) => {
         if (expanded === c.name) {
           return (
@@ -144,12 +144,12 @@ const Creatures = () => {
 
         return (
           <li
-            class={cx('creature-list-item', { selected: selected === i })}
+            class={cx(styles.listItem, { selected: selected === i })}
             key={c.name}
             onClick={select(c.name)}
           >
-            <h2 class="creature-name">{c.name}</h2>
-            <p class="creature-type">({type(c)})</p>
+            <h2 class={styles.name}>{c.name}</h2>
+            <p class={styles.type}>({type(c)})</p>
           </li>
         )
       })}
@@ -157,16 +157,16 @@ const Creatures = () => {
   )
 
   return (
-    <div class="creatures">
+    <div class={styles.container}>
       <header>
         <h1>Creatures</h1>
         <input
-          class="search"
+          class={styles.search}
           onInput={(e) => setSearchTerm(e.currentTarget.value)}
           placeholder="Search"
           value={searchTerm}
         />
-        <button class="add-creature">add creature</button>
+        <button class={styles.addCreature}>add creature</button>
       </header>
 
       {creatures.length === 0 ? <Loading /> : creatureList}
