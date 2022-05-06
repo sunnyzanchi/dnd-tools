@@ -2,8 +2,8 @@ import cx from 'classnames'
 import empty from 'just-is-empty'
 import { FunctionalComponent as FC } from 'preact'
 
-import AbilityScoresDisplay from './AbilityScoresDisplay'
-import { AbilityScores, CreatureSize, CreatureType } from './types'
+import AbilityScores from './AbilityScores'
+import { AbilityScores as AbScores, CreatureSize, CreatureType } from './types'
 import './ExpandedItem.css'
 
 type Trait = {
@@ -13,7 +13,7 @@ type Trait = {
 
 type Props = {
   actions?: Trait[]
-  abilityScores: AbilityScores
+  abilityScores: AbScores
   alignment: string
   legendaryActions?: {
     startText: string
@@ -85,7 +85,7 @@ const ExpandedItem: FC<Props> = ({
         ))}
       </div>
 
-      <AbilityScoresDisplay {...abilityScores} />
+      <AbilityScores {...abilityScores} />
 
       <div class="creature-short-traits">
         {Object.entries(shortTraits).map(([name, value]) => (
