@@ -7,13 +7,10 @@ import {
   AbilityScores as AbScores,
   CreatureSize,
   CreatureType,
+  Trait,
 } from './types'
 import styles from './ExpandedItem.module.scss'
 
-type Trait = {
-  description: string
-  name: string
-}
 type Props = {
   actions?: Trait[]
   abilityScores: AbScores

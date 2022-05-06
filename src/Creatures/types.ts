@@ -33,3 +33,8 @@ export type CreatureType =
   | 'ooze'
   | 'plant'
   | 'undead'
+
+export type Trait = {
+  description: string
+  name: string
+}

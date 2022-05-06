@@ -6,7 +6,8 @@ import kMap from 'just-map-keys'
 import pick from 'just-pick'
 import { matchSorter } from 'match-sorter'
 import { useEffect, useState } from 'preact/hooks'
-
+import { useBool } from 'src/hooks'
+import Create from './Create'
 import ExpandedItem from './ExpandedItem'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
@@ -55,7 +56,8 @@ const physicalTraits = (creature: Creature) =>
 const Loading = () => <div class={styles.loading}>Loading</div>
 
 const Creatures = () => {
-  const creatures = useCreatures()
+  const [creatures, { add: addCreature }] = useCreatures()
+  const [creating, { toggle: toggleCreating }] = useBool(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selected, setSelected] = useState<number | null>(null)
@@ -166,8 +168,11 @@ const Creatures = () => {
           placeholder="Search"
           value={searchTerm}
         />
-        <button class={styles.addCreature}>add</button>
+        <button class={styles.addCreature} onClick={toggleCreating}>
+          add
+        </button>
       </header>
+      {creating && <Create onSave={addCreature} />}
 
       {creatures.length === 0 ? <Loading /> : creatureList}
     </section>
