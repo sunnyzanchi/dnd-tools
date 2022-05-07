@@ -47,7 +47,6 @@ const splitP = (p) => {
     name: em.innerText.trim(),
   }
 }
-
 const transformActions = compose((html) => {
   const ps = html.querySelectorAll('p')
   const newPs = []
@@ -79,6 +78,12 @@ const transformLegendaryActions = compose((html) => {
     actions: p.slice(1).map(splitP),
   }
 }, parseHtml)
+const transformReactions = compose((html) => {
+  const ps = html.querySelectorAll('p')
+  const reactions = ps.map((p) => splitP(p, true))
+
+  return reactions
+}, parseHtml)
 const transformTraits = compose(
   (html) =>
     html
@@ -86,12 +91,11 @@ const transformTraits = compose(
       .filter((p) => p.childNodes.some((cn) => cn.rawTagName === 'em'))
       .map(
         compose(
-          ({ description, name }) => ({
-            name,
-            description: name.includes('Spellcasting')
-              ? `${description}\n\n${spellcastingDesc(html)}`
-              : description,
-          }),
+          mapProp('description', (desc) =>
+            desc.includes('Spellcasting')
+              ? `${desc}\n\n${spellcastingDesc(html)}`
+              : desc
+          ),
           splitP
         )
       ),
@@ -99,6 +103,7 @@ const transformTraits = compose(
 )
 
 const alter = compose(
+  mapProp('Reactions', transformReactions),
   mapProp('Legendary Actions', transformLegendaryActions),
   mapProp('Actions', transformActions),
   mapProp('Traits', transformTraits),

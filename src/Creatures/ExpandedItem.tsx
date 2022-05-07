@@ -25,6 +25,7 @@ type Props = {
     'Hit Points': string
     Speed: string
   }
+  reactions: Trait[]
   selected?: boolean
   shortTraits: {
     'Condition Immunities'?: string
@@ -58,6 +59,7 @@ const ExpandedItem: FC<Props> = ({
   name,
   onCollapse,
   physicalTraits,
+  reactions,
   selected,
   shortTraits,
   size,
@@ -116,6 +118,18 @@ const ExpandedItem: FC<Props> = ({
           <section class={styles.actions}>
             <h3>Actions</h3>
             {actions!.map((action) => (
+              <TraitLine {...action} />
+            ))}
+          </section>
+        </>
+      )}
+
+      {!empty(reactions) && (
+        <>
+          <hr />
+          <section class={styles.reactions}>
+            <h3>Reactions</h3>
+            {reactions!.map((action) => (
               <TraitLine {...action} />
             ))}
           </section>

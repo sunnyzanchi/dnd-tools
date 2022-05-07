@@ -135,6 +135,7 @@ const Creatures = () => {
               name={c.name}
               onCollapse={deselect}
               physicalTraits={physicalTraits(c)}
+              reactions={c.Reactions}
               selected={selected === i}
               shortTraits={shortTraits(c)}
               size={size(c)}
