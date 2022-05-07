@@ -1,14 +1,14 @@
 import compose from 'compose-function'
 import { FunctionalComponent as FC, JSX } from 'preact'
 import { useState } from 'preact/hooks'
-import oMap from 'just-map-object'
+import { mapValues } from 'remeda'
 
 import AbilityScoresDisplay from './AbilityScores'
 import styles from './Create.module.scss'
 import { append, mapProp } from 'src/utils'
 import { AbilityScores, Creature, Trait } from './types'
 
-const shortTraitLabels = {
+const shortTraitPlaceholders = {
   'Saving Throws': 'STR +4, DEX +2, etc.',
   Skills: 'Animal Handling + 5, Performance +3',
   'Damage Immunities': 'fire, cold',
@@ -16,7 +16,6 @@ const shortTraitLabels = {
   Languages: 'Common, Dwarvish',
   Challenge: '1/4 (50XP)',
 }
-type ShortTraits = typeof shortTraitLabels
 
 const defaultAbilityScores = (): AbilityScores => ({
   STR: 10,
@@ -43,6 +42,8 @@ type PhysicalTraits = {
   'Hit Points': string
   Speed: string
 }
+
+type ShortTraits = typeof shortTraitPlaceholders
 type Props = {
   onSave: (creature: Creature) => unknown
 }
@@ -56,9 +57,6 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
     defaultAbilityScores()
   )
   const [actions, setActions] = useState<Trait[]>([])
-  const [shortTraits, setShortTraits] = useState(
-    oMap(shortTraitLabels, () => '') as ShortTraits
-  )
   const [legendary, setLegendary] = useState<LegendaryActions>({
     actions: [],
     startText: '',
@@ -71,6 +69,9 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
     'Hit Points': '',
     Speed: '',
   })
+  const [shortTraits, setShortTraits] = useState<ShortTraits>(
+    mapValues(shortTraitPlaceholders, () => '')
+  )
 
   const addAction = () => setActions(append(emptyTrait()))
 
@@ -169,7 +170,7 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
               id={`create-creature-trait-${i}`}
               key={key}
               onChange={updateShortTraits(key as keyof ShortTraits)}
-              placeholder={shortTraitLabels[key as keyof ShortTraits]}
+              placeholder={shortTraitPlaceholders[key as keyof ShortTraits]}
               value={value}
             />
           </>

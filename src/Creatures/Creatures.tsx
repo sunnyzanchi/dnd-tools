@@ -1,27 +1,20 @@
 import cx from 'classnames'
 import useKeyBind from '@zanchi/use-key-bind'
 import compose from 'compose-function'
-import oMap from 'just-map-object'
-import kMap from 'just-map-keys'
-import pick from 'just-pick'
 import { matchSorter } from 'match-sorter'
 import { useEffect, useState } from 'preact/hooks'
 import { useBool } from 'src/hooks'
 import Create from './Create'
+import { mapKeys, mapValues, pick } from 'remeda'
+
 import ExpandedItem from './ExpandedItem'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
 import styles from './Creatures.module.scss'
 
 const abilityScores: (creature: Creature) => AbilityScores = compose(
-  (abilityScores) =>
-    // @ts-ignore
-    oMap(abilityScores as Record<string, string>, (_name, score) =>
-      Number.parseInt(score)
-    ) as AbilityScores,
-  (creature: Creature) =>
-    // @ts-ignore
-    pick(creature, ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'])
+  mapValues((score) => Number.parseInt(score as string)),
+  pick(['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'])
 )
 const parseMeta = (
   creature: Creature
@@ -72,9 +65,9 @@ const Creatures = () => {
     const searchValue = searchTerm.slice(operatorIndex + 1).trim()
 
     filteredCreatures = creatures.filter((creature) => {
-      const lowercaseCreature = kMap(creature, (v, k) =>
+      const lowercaseCreature = mapKeys(creature, (k) =>
         String(k).toLowerCase()
-      ) as Creature
+      )
 
       const value = lowercaseCreature[key as keyof Creature] as string
       return value?.includes(searchValue)

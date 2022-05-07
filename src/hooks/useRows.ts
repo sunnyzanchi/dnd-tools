@@ -1,4 +1,4 @@
-import last from 'just-last'
+import { last } from 'remeda'
 import { RowValue } from 'src/Initiative/Row'
 import useStack from './useStack'
 

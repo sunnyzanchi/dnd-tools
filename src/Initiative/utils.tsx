@@ -1,4 +1,4 @@
-import oMap from 'just-map-object'
+import { mapValues } from 'remeda'
 import partition from 'just-partition'
 
 import { getRowSelections, Selection } from 'src/hooks/useSelections'
@@ -165,12 +165,12 @@ export const formatRow =
   (row: RowValue, index: number): RowDisplay => {
     const propSelections = getPropSelections(selections, index)
 
-    return oMap(row, (prop, value) =>
+    return mapValues(row, (value, prop) =>
       formatCell(
         value,
         propSelections[prop as keyof RowValue] ? inputValue : null
       )
-    ) as RowDisplay
+    )
   }
 
 export const formatStaticCell = (value: CellValue): number | string => {

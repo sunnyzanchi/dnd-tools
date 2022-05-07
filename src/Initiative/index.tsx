@@ -1,7 +1,7 @@
 import empty from 'just-is-empty'
-import last from 'just-last'
 import { createContext, Ref, VNode } from 'preact'
 import { useEffect, useState, useRef } from 'preact/hooks'
+import { last } from 'remeda'
 import useKeyBind from '@zanchi/use-key-bind'
 
 import {
