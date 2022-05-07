@@ -27,11 +27,6 @@ export const append =
   (list: T[]) =>
     list.concat(item)
 
-export const map =
-  <T, U>(cb: (item: T, index: number, list: T[]) => U) =>
-  (list: T[]): any[] =>
-    list.map(cb)
-
 /**
  * returns a new array with the value at `index`
  * replaced with the return value of `fn`.

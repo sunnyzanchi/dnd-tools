@@ -2,11 +2,12 @@ import cx from 'classnames'
 import useKeyBind from '@zanchi/use-key-bind'
 import compose from 'compose-function'
 import { matchSorter } from 'match-sorter'
+import { FunctionComponent as FC } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
-import { useBool } from 'src/hooks'
-import Create from './Create'
 import { mapKeys, mapValues, pick } from 'remeda'
 
+import { useBool } from 'src/hooks'
+import Create from './Create'
 import ExpandedItem from './ExpandedItem'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
@@ -48,7 +49,11 @@ const physicalTraits = (creature: Creature) =>
 
 const Loading = () => <div class={styles.loading}>Loading</div>
 
-const Creatures = () => {
+type Props = {
+  onAddToInitiative: (c: Creature) => unknown
+}
+
+const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   const [creatures, { add: addCreature }] = useCreatures()
   const [creating, { toggle: toggleCreating }] = useBool(false)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -126,6 +131,7 @@ const Creatures = () => {
               alignment={alignment(c)}
               legendaryActions={c['Legendary Actions']}
               name={c.name}
+              onAdd={() => onAddToInitiative(c)}
               onCollapse={deselect}
               physicalTraits={physicalTraits(c)}
               reactions={c.Reactions}
@@ -166,6 +172,7 @@ const Creatures = () => {
           add
         </button>
       </header>
+
       {creating && <Create onSave={addCreature} />}
 
       {creatures.length === 0 ? <Loading /> : creatureList}

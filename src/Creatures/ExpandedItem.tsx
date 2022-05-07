@@ -41,6 +41,7 @@ type Props = {
   size: CreatureSize
   type: CreatureType
   traits: Trait[]
+  onAdd: () => unknown
   onCollapse: () => unknown
 }
 
@@ -57,6 +58,7 @@ const ExpandedItem: FC<Props> = ({
   alignment,
   legendaryActions,
   name,
+  onAdd,
   onCollapse,
   physicalTraits,
   reactions,
@@ -71,7 +73,9 @@ const ExpandedItem: FC<Props> = ({
       <div class={styles.titleGroup} onClick={onCollapse}>
         <h2 class={styles.name}>{name}</h2>
         <div class={styles.buttonGroup}>
-          <button class={styles.addToInitiative}>add</button>
+          <button class={styles.addToInitiative} onClick={onAdd}>
+            add
+          </button>
           {/* <button class="collapse" onClick={onCollapse}>
             col
           </button> */}

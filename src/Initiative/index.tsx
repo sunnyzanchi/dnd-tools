@@ -1,5 +1,5 @@
 import empty from 'just-is-empty'
-import { createContext, Ref, VNode } from 'preact'
+import { createContext, FunctionComponent as FC, Ref, VNode } from 'preact'
 import { useEffect, useState, useRef } from 'preact/hooks'
 import { last } from 'remeda'
 import useKeyBind from '@zanchi/use-key-bind'
@@ -8,10 +8,10 @@ import {
   useElementSize,
   useKeyIsPressed,
   useOnClick,
-  useRows,
   useSelections,
   useTurn,
 } from 'src/hooks'
+import { Actions as RowActions, RowState } from 'src/hooks/useRows'
 import Header from './Header'
 import Row, { COLUMNS, RowValue } from './Row'
 import {
@@ -38,17 +38,19 @@ type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
  */
 export const FloatingInput = createContext<VNode | null>(null)
 
-const Initiative = () => {
-  const [
-    rows,
-    {
-      clear: clearRowHistory,
-      redo: redoRowChange,
-      set: setRows,
-      sort: sortRows,
-      undo: undoRowChange,
-    },
-  ] = useRows()
+type Props = {
+  rows: RowState
+  rowActions: RowActions
+}
+
+const Initiative: FC<Props> = ({ rows, rowActions }) => {
+  const {
+    clear: clearRowHistory,
+    redo: redoRowChange,
+    set: setRows,
+    sort: sortRows,
+    undo: undoRowChange,
+  } = rowActions
   const [turn, nextTurn] = useTurn(rows)
   const [sizeRef, , height] = useElementSize()
   const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
