@@ -2,6 +2,7 @@ import cx from 'classnames'
 import { ComponentChildren, FunctionalComponent as FC } from 'preact'
 
 import EditableCell, { CellValue } from './EditableCell'
+import styles from './Row.module.scss'
 
 export const COLUMNS: (keyof RowValue)[] = ['initiative', 'name', 'hp', 'notes']
 
@@ -43,7 +44,7 @@ const Row: FC<Props> = ({
   selections,
   ...data
 }) => (
-  <li class={cx('row', { isTurn })}>
+  <li class={cx(styles.row, { [styles.isTurn]: isTurn })}>
     {COLUMNS.map((columnName, i) => (
       <EditableCell
         editing={i === editingCell}

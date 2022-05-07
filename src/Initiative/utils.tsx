@@ -1,8 +1,10 @@
+import cx from 'classnames'
 import { mapValues } from 'remeda'
 import partition from 'just-partition'
 
 import { getRowSelections, Selection } from 'src/hooks/useSelections'
 import { CellDisplay, CellValue } from './EditableCell'
+import ecstyles from './EditableCell.module.scss'
 import { COLUMNS, RowDisplay, RowValue } from './Row'
 
 const MINUS = '\u2212'
@@ -137,7 +139,7 @@ export const formatCell = (
     return (
       <>
         {value}
-        <span class="autocomplete-result add">
+        <span class={cx(ecstyles.autocompleteResult, ecstyles.add)}>
           {' '}
           + {num} = {Number(value) + num}
         </span>
@@ -149,7 +151,7 @@ export const formatCell = (
     return (
       <>
         {value}
-        <span class="autocomplete-result subtract">
+        <span class={cx(ecstyles.autocompleteResult, ecstyles.subtract)}>
           {' '}
           {MINUS} {num} = {Number(value) - num}
         </span>

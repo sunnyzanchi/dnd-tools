@@ -3,6 +3,7 @@ import { ComponentChildren, FunctionComponent as FC } from 'preact'
 import { useContext } from 'preact/hooks'
 
 import { FloatingInput } from '.'
+import styles from './EditableCell.module.scss'
 
 export type CellDisplay = ComponentChildren
 export type CellValue = number | string
@@ -22,7 +23,10 @@ const EditableCell: FC<Props> = ({ editing, onSelect, selected, value }) => {
   const input = useContext(FloatingInput)
 
   return (
-    <div class={cx('editable-cell', { selected })} onClick={onSelect}>
+    <div
+      class={cx(styles.editableCell, { [styles.selected]: selected })}
+      onClick={onSelect}
+    >
       {/* this wrapping fragment is to prevent a backspace bug. */}
       {/* without it, backspacing after typing a shorthand update, */}
       {/* like '+3' > Backspace > '+', causes the input to deselect. */}
