@@ -59,10 +59,7 @@
   float: left;
 }
 
-.actions, 
-.legendary-actions,
-.long-traits,
-.short-traits {
+.trait-editor {
   display: grid;
   gap: 3px;
   grid-column: 1 / 4;
@@ -115,6 +112,7 @@
   composes: button;
   grid-column-end: -1;
   margin-top: 20px;
+  text-transform: lowercase;
 }
 
 .save-button {

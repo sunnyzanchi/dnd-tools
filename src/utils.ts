@@ -19,7 +19,7 @@ export const mapProp =
   (obj: T): T => ({
     ...obj,
     // @ts-expect-error
-    [prop]: fn?.(obj[prop]) ?? fn,
+    [prop]: typeof fn === 'function' ? fn(obj[prop]) : fn,
   })
 
 export const append =

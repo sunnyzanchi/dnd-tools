@@ -5,8 +5,10 @@ import { mapValues } from 'remeda'
 
 import AbilityScoresDisplay from './AbilityScores'
 import styles from './Create.module.scss'
-import { append, mapProp } from 'src/utils'
-import { AbilityScores, Creature, Trait } from './types'
+import { mapProp } from 'src/utils'
+import { AbilityScores, Creature } from './types'
+import useTraitEditor from './useTraitEditor'
+import TraitEditor, { mapHookActions } from './TraitEditor'
 
 const shortTraitPlaceholders = {
   'Saving Throws': 'STR +4, DEX +2, etc.',
@@ -25,16 +27,11 @@ const defaultAbilityScores = (): AbilityScores => ({
   WIS: 10,
   CHA: 10,
 })
-const emptyTrait = (): Trait => ({ description: '', name: '' })
 const getInputVal = (
   e: JSX.TargetedEvent<HTMLInputElement | HTMLTextAreaElement>
 ) => e.currentTarget.value
 
 type InputHandler = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => void
-type LegendaryActions = {
-  actions: Trait[]
-  startText: string
-}
 type PhysicalTraits = {
   name: string
   meta: string
@@ -42,8 +39,8 @@ type PhysicalTraits = {
   'Hit Points': string
   Speed: string
 }
-
 type ShortTraits = typeof shortTraitPlaceholders
+
 type Props = {
   onSave: (creature: Creature) => unknown
 }
@@ -56,12 +53,12 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
   const [abilityScores, setAbilityScores] = useState<AbilityScores>(
     defaultAbilityScores()
   )
-  const [actions, setActions] = useState<Trait[]>([])
-  const [legendary, setLegendary] = useState<LegendaryActions>({
-    actions: [],
-    startText: '',
-  })
-  const [longTraits, setLongTraits] = useState<Trait[]>([])
+  const [{ traits: actions }, actionsActions] = useTraitEditor()
+  const [
+    { startText: legendaryStartText, traits: legendary },
+    legendaryActions,
+  ] = useTraitEditor({ startText: true })
+  const [{ traits: longTraits }, longTraitsActions] = useTraitEditor()
   const [physicalTraits, setPhysicalTraits] = useState({
     meta: '',
     name: '',
@@ -69,16 +66,10 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
     'Hit Points': '',
     Speed: '',
   })
+  const [{ traits: reactions }, reactionsActions] = useTraitEditor()
   const [shortTraits, setShortTraits] = useState<ShortTraits>(
     mapValues(shortTraitPlaceholders, () => '')
   )
-
-  const addAction = () => setActions(append(emptyTrait()))
-
-  const addLegendaryAction = () =>
-    setLegendary(mapProp('actions', append(emptyTrait())))
-
-  const addTrait = () => setLongTraits((t) => append(emptyTrait())(t))
 
   const save = () => {
     // @ts-ignore
@@ -88,44 +79,15 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
       ...physicalTraits,
       Actions: actions,
       Traits: longTraits,
-      'Legendary Actions': legendary,
+      'Legendary Actions': {
+        startText: legendaryStartText,
+        actions: legendary,
+      },
     })
   }
 
   const updateAbilityScores = (name: keyof AbilityScores, value: number) =>
     setAbilityScores(mapProp(name, value))
-
-  type TraitsUpdater = (a: Trait[]) => Trait[]
-  const updateActions = (index: number, prop: keyof Trait): InputHandler =>
-    compose(
-      (fn: TraitsUpdater) => setActions(fn),
-      (value: string) => updateAt(index, mapProp(prop, value)),
-      getInputVal
-    )
-
-  type LAUpdater = (a: LegendaryActions) => LegendaryActions
-  const updateLegendaryAction = (
-    index: number,
-    prop: keyof Trait
-  ): InputHandler =>
-    compose(
-      (fn: LAUpdater) => setLegendary(fn),
-      (value) => mapProp('actions', updateAt(index, mapProp(prop, value))),
-      getInputVal
-    )
-
-  const updateLegendaryStartText = compose(
-    (fn: LAUpdater) => setLegendary(fn),
-    (value) => mapProp('startText', value),
-    getInputVal
-  )
-
-  const updateLongTraits = (index: number, prop: keyof Trait): InputHandler =>
-    compose(
-      (fn: TraitsUpdater) => setLongTraits(fn),
-      (value) => updateAt(index, mapProp(prop, value)),
-      getInputVal
-    )
 
   const updatePhysicalTraits =
     (key: keyof PhysicalTraits): InputHandler =>
@@ -160,7 +122,7 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
         {...abilityScores}
       />
 
-      <section class={styles.shortTraits}>
+      <section class={styles.traitEditor}>
         {Object.entries(shortTraits).map(([key, value], i) => (
           <>
             <label for={`create-creature-trait-${i}`} key={`${key}-label`}>
@@ -177,77 +139,31 @@ const CreateCreature: FC<Props> = ({ onSave }) => {
         ))}
       </section>
 
-      <section class={styles.longTraits}>
-        <hr />
-        {longTraits.map(({ name, description }, i) => (
-          <div class={styles.longTrait} key={i}>
-            <input
-              onChange={updateLongTraits(i, 'name')}
-              placeholder="name"
-              value={name}
-            />
-            <textarea
-              // @ts-expect-error
-              onChange={updateLongTraits(i, 'description')}
-              placeholder="description"
-              value={description}
-            />
-          </div>
-        ))}
-        <button class={styles.addButton} onClick={addTrait}>
-          add feature
-        </button>
-      </section>
+      <TraitEditor
+        {...mapHookActions(longTraitsActions)}
+        name="Features"
+        noTitle
+        traits={longTraits}
+      />
 
-      <section class={styles.actions}>
-        <hr />
-        <h3>Actions</h3>
-        {actions.map(({ name, description }, i) => (
-          <div class={styles.longTrait} key={i}>
-            <input
-              onChange={updateActions(i, 'name')}
-              placeholder="name"
-              value={name}
-            />
-            <textarea
-              // @ts-expect-error
-              onChange={updateActions(i, 'description')}
-              placeholder="description"
-              value={description}
-            />
-          </div>
-        ))}
-        <button class={styles.addButton} onClick={addAction}>
-          add action
-        </button>
-      </section>
+      <TraitEditor
+        {...mapHookActions(actionsActions)}
+        name="Actions"
+        traits={actions}
+      />
 
-      <section class={styles.legendaryActions}>
-        <hr />
-        <h3>Legendary Actions</h3>
-        <textarea
-          onChange={updateLegendaryStartText}
-          placeholder="start text"
-          value={legendary.startText}
-        />
-        {legendary.actions.map(({ name, description }, i) => (
-          <div class={styles.longTrait} key={i}>
-            <input
-              onChange={updateLegendaryAction(i, 'name')}
-              placeholder="name"
-              value={name}
-            />
-            <input
-              onChange={updateLegendaryAction(i, 'description')}
-              placeholder="description"
-              value={description}
-            />
-          </div>
-        ))}
-        <button class={styles.addButton} onClick={addLegendaryAction}>
-          add action
-        </button>
-      </section>
+      <TraitEditor
+        {...mapHookActions(reactionsActions)}
+        name="Reactions"
+        traits={reactions}
+      />
+
+      <TraitEditor
+        {...mapHookActions(legendaryActions)}
+        name="Legendary Actions"
+        traits={legendary}
+        startText={legendaryStartText}
+      />
 
       <hr />
       <button class={styles.saveButton} onClick={save}>
