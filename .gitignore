@@ -1,3 +1,4 @@
 dist/
 node_modules/
 src/Creatures/creatures_in.json
+src/Items/items_in.json
