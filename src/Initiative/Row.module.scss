@@ -1,0 +1,20 @@
+.row {
+  border-bottom: 1px solid var(--c-border);
+  display: grid;
+  grid-template-columns:
+    minmax(137px, 1fr)
+    minmax(200px, 2fr)
+    minmax(180px, 1fr)
+    2fr;
+  height: 60px;
+  position: relative;
+
+  &.is-turn::after {
+    background: var(--c-text-decrease);
+    content: '';
+    height: 100%;
+    left: -10px;
+    position: absolute;
+    width: 10px;
+  }
+}

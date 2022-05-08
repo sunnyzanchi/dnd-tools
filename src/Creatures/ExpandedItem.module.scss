@@ -1,0 +1,110 @@
+.list-item {
+  align-items: baseline;
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-text-secondary);
+  display: block;
+  gap: 8px;
+  grid-template-columns: 1fr min-content;
+  padding-right: 40px;
+  padding: 20px;
+
+  & button {
+    border: 0;
+    background: var(--c-bg);
+    color: var(--c-text);
+    cursor: pointer;
+    padding: 12px;
+  }
+  & button:hover {
+    background: var(--c-bg-hover);
+  }
+
+  & hr,
+  & section {
+    grid-column: span 2;
+    margin: 0 0 20px 0;
+    padding-left: 2px;
+    width: 100%;
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  & p {
+    margin: 0;
+  }
+}
+
+.title-group {
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  margin: -20px -40px 5px -20px;
+  padding: 20px 20px 15px 20px;
+  // + the negative right margin
+  max-width: calc(100% + 40px);
+
+  &:hover {
+    background: var(--c-bg-hover);
+  }
+}
+.size-type {
+  font-size: 16px;
+  font-style: italic;
+}
+.trait {
+  font-size: 16px;
+
+  & span {
+    font-size: 16px;
+    font-weight: 700;
+  }
+}
+.short-traits {
+  display: grid;
+  gap: 5px;
+  grid-column: 1 / 3;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+
+  & .trait {
+    line-height: 1.2em
+  }
+}
+
+.actions,
+.legendary-actions,
+.reactions,
+.traits {
+  display: grid;
+  gap: 16px;
+  grid-column: 1 / 3;
+  white-space: pre-wrap;
+
+  & h3 {
+    color: var(--c-text);
+    margin: 0;
+  }
+
+  & .trait {
+    line-height: 1.4em;
+  }
+}
+
+.name {
+  font-size: 48px;
+  line-height: 1.4em;
+  margin: 0;
+}
+
+.button-group {
+  background: var(--c-bg);
+  display: flex;
+  justify-content: end;
+  /* so the button doesn't slide all the way to the bottom edge. */
+  /* this can't be higher or it pushes the content down */
+  /* and messes up the spacing between the name and the size/type. */
+  margin-bottom: 8px;
+  position: sticky;
+  top: 16px;
+}

@@ -1,13 +1,14 @@
-import last from 'just-last'
+import { last } from 'remeda'
+
 import { RowValue } from 'src/Initiative/Row'
 import useStack from './useStack'
 
 /**
  * all rows in the initiative tracker.
  */
-type RowState = RowValue[]
+export type RowState = RowValue[]
 
-type Actions = {
+export type Actions = {
   clear: () => void
   /**
    * returns true if a redo was done,

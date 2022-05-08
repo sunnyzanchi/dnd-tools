@@ -1,17 +1,17 @@
 import empty from 'just-is-empty'
-import last from 'just-last'
-import { createContext, Ref, VNode } from 'preact'
+import { createContext, FunctionComponent as FC, Ref, VNode } from 'preact'
 import { useEffect, useState, useRef } from 'preact/hooks'
+import { last } from 'remeda'
 import useKeyBind from '@zanchi/use-key-bind'
 
 import {
   useElementSize,
   useKeyIsPressed,
   useOnClick,
-  useRows,
   useSelections,
   useTurn,
 } from 'src/hooks'
+import { Actions as RowActions, RowState } from 'src/hooks/useRows'
 import Header from './Header'
 import Row, { COLUMNS, RowValue } from './Row'
 import {
@@ -21,8 +21,10 @@ import {
   formatInput,
   formatRow,
 } from './utils'
-import './initiative.css'
+import styles from './Initiative.module.scss'
+import ecstyles from './EditableCell.module.scss'
 
+const INPUT_CLASSNAME = 'cell-input'
 const ROW_HEIGHT = 60 // px
 
 type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
@@ -36,17 +38,19 @@ type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
  */
 export const FloatingInput = createContext<VNode | null>(null)
 
-const Initiative = () => {
-  const [
-    rows,
-    {
-      clear: clearRowHistory,
-      redo: redoRowChange,
-      set: setRows,
-      sort: sortRows,
-      undo: undoRowChange,
-    },
-  ] = useRows()
+type Props = {
+  rows: RowState
+  rowActions: RowActions
+}
+
+const Initiative: FC<Props> = ({ rows, rowActions }) => {
+  const {
+    clear: clearRowHistory,
+    redo: redoRowChange,
+    set: setRows,
+    sort: sortRows,
+    undo: undoRowChange,
+  } = rowActions
   const [turn, nextTurn] = useTurn(rows)
   const [sizeRef, , height] = useElementSize()
   const cmdSelecting = useKeyIsPressed(['Control', 'Meta'])
@@ -67,7 +71,7 @@ const Initiative = () => {
   const [inputValue, setInputValue] = useState<number | string>('')
   const input = (
     <input
-      class="cell-input"
+      class={INPUT_CLASSNAME}
       onInput={(e) => setInputValue(e.currentTarget.value)}
       ref={inputRef}
       value={formatInput(inputValue)}
@@ -164,8 +168,8 @@ const Initiative = () => {
     // and we should clear selections and stop showing the input box.
     const el = e.target as HTMLElement
     if (
-      el?.classList?.contains('editable-cell') ||
-      el?.classList?.contains('cell-input')
+      el?.classList?.contains(ecstyles.editableCell) ||
+      el?.classList?.contains(INPUT_CLASSNAME)
     )
       return
 
@@ -230,8 +234,8 @@ const Initiative = () => {
 
   return (
     <FloatingInput.Provider value={input}>
-      <div class="initiative">
-        <ol class="rows" ref={sizeRef as Ref<HTMLOListElement>}>
+      <div class={styles.initiative}>
+        <ol class={styles.rows} ref={sizeRef as Ref<HTMLOListElement>}>
           <Header onSort={sortRows} />
           {rows.map(formatRow(selections, inputValue)).map((r, i) => (
             <Row
@@ -247,7 +251,7 @@ const Initiative = () => {
           ))}
         </ol>
 
-        <button class="next" onClick={nextTurn}>
+        <button class={styles.nextButton} onClick={nextTurn}>
           {turn != null ? 'Next' : 'Start'}
         </button>
       </div>

@@ -1,8 +1,10 @@
-import oMap from 'just-map-object'
+import cx from 'classnames'
+import { mapValues } from 'remeda'
 import partition from 'just-partition'
 
 import { getRowSelections, Selection } from 'src/hooks/useSelections'
 import { CellDisplay, CellValue } from './EditableCell'
+import ecstyles from './EditableCell.module.scss'
 import { COLUMNS, RowDisplay, RowValue } from './Row'
 
 const MINUS = '\u2212'
@@ -137,7 +139,7 @@ export const formatCell = (
     return (
       <>
         {value}
-        <span class="autocomplete-result add">
+        <span class={cx(ecstyles.autocompleteResult, ecstyles.add)}>
           {' '}
           + {num} = {Number(value) + num}
         </span>
@@ -149,7 +151,7 @@ export const formatCell = (
     return (
       <>
         {value}
-        <span class="autocomplete-result subtract">
+        <span class={cx(ecstyles.autocompleteResult, ecstyles.subtract)}>
           {' '}
           {MINUS} {num} = {Number(value) - num}
         </span>
@@ -165,12 +167,12 @@ export const formatRow =
   (row: RowValue, index: number): RowDisplay => {
     const propSelections = getPropSelections(selections, index)
 
-    return oMap(row, (prop, value) =>
+    return mapValues(row, (value, prop) =>
       formatCell(
         value,
         propSelections[prop as keyof RowValue] ? inputValue : null
       )
-    ) as RowDisplay
+    )
   }
 
 export const formatStaticCell = (value: CellValue): number | string => {

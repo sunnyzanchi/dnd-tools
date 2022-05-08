@@ -11,14 +11,21 @@
   "dependencies": {
     "@zanchi/use-key-bind": "^1.1.4",
     "classnames": "^2.3.1",
+    "compose-function": "^3.0.3",
     "just-is-empty": "^3.1.2",
-    "just-last": "^3.0.1",
-    "just-map-object": "^2.1.1",
     "just-partition": "^2.0.1",
-    "preact": "^10.5.15"
+    "match-sorter": "^6.3.1",
+    "preact": "^10.5.15",
+    "remeda": "^0.0.32"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.1.5",
+    "@types/compose-function": "^0.0.30",
+    "@types/lodash": "^4.14.182",
+    "lodash": "^4.17.21",
+    "node-html-parser": "^5.3.3",
+    "postcss-nesting": "^10.1.4",
+    "sass": "^1.50.1",
     "typescript": "^4.5.4",
     "vite": "^2.9.2"
   }

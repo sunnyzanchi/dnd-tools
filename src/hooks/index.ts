@@ -1,3 +1,4 @@
+export { default as useBool } from './useBool'
 export { default as useClickOutside } from './useClickOutside'
 export { default as useElementSize } from './useElementSize'
 export { default as useKeyIsPressed } from './useKeyIsPressed'
