@@ -45,7 +45,7 @@ type Props = {
   onCollapse: () => unknown
 }
 
-const TraitLine = ({ description, name }: Trait) => (
+export const TraitLine = ({ description, name }: Trait) => (
   <p class={styles.trait}>
     <span>{name} </span>
     {description}
