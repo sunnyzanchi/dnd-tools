@@ -1,0 +1,32 @@
+.container {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  height: 100vh;
+}
+
+.tabs {
+  align-items: baseline;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tab {
+  cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  padding: 16px 24px;
+  text-transform: uppercase;
+  transition: 160ms background-color ease-in-out;
+
+  &:hover {
+    background: var(--c-bg-hover);
+  }
+}
+
+.selected-tab {
+  border-bottom: 1px solid var(--c-border-selected);
+  margin-bottom: -1px;
+}
