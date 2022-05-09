@@ -9,8 +9,10 @@ import { mapKeys, mapValues, pick } from 'remeda'
 import { useBool } from 'src/hooks'
 import Create from './Create'
 import ExpandedItem from './ExpandedItem'
+import { SearchHeader } from 'src/components'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
+import { getInputVal } from './utils'
 import styles from './Creatures.module.scss'
 import ListItem from 'src/components/ListItem'
 
@@ -160,18 +162,12 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
 
   return (
     <section class={styles.container}>
-      <header>
-        <h1>Creatures</h1>
-        <input
-          class={styles.search}
-          onInput={(e) => setSearchTerm(e.currentTarget.value)}
-          placeholder="Search"
-          value={searchTerm}
-        />
-        <button class={styles.addCreature} onClick={toggleCreating}>
-          add
-        </button>
-      </header>
+      <SearchHeader
+        onAdd={toggleCreating}
+        onInput={compose(setSearchTerm, getInputVal)}
+        searchTerm={searchTerm}
+        title="Creatures"
+      />
 
       {creating && <Create onSave={addCreature} />}
 
