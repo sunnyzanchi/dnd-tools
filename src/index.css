@@ -32,6 +32,11 @@
   }
 }
 
+#app {
+  display: grid;
+  grid-template-columns: 65% 35%;
+}
+
 html,
 body {
   height: 100%;

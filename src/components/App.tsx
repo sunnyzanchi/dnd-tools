@@ -1,16 +1,16 @@
 import compose from 'compose-function'
+import { FunctionalComponent as FC } from 'preact'
 import { useState } from 'preact/hooks'
 import { first } from 'remeda'
 
-import Creatures from './Creatures'
-import Initiative from './Initiative'
-import Items from './Items'
-import { RowValue } from './Initiative/Row'
-import { Creature } from './Creatures/types'
+import Creatures from 'src/Creatures'
+import { Creature } from 'src/Creatures/types'
+import Initiative from 'src/Initiative'
+import { RowValue } from 'src/Initiative/Row'
+import Items from 'src/Items'
 import TabbedContainer from 'src/components/TabbedContainer'
-import { useRows } from './hooks'
-import { updateAt } from './utils'
-import './app.css'
+import { useRows } from 'src/hooks'
+import { updateAt } from 'src/utils'
 
 const TABS = [{ name: 'Creatures' }, { name: 'Items' }]
 
@@ -21,7 +21,7 @@ const flatHp: (c: Creature) => number = compose(
   (c) => c['Hit Points']
 )
 
-const App = () => {
+const App: FC = () => {
   const [currentTab, setCurrentTab] = useState(0)
   const [rows, rowActions] = useRows()
 
@@ -40,7 +40,7 @@ const App = () => {
   }
 
   return (
-    <div class="container">
+    <>
       <Initiative rows={rows} rowActions={rowActions} />
       <TabbedContainer
         currentTab={currentTab}
@@ -50,7 +50,7 @@ const App = () => {
         <Creatures onAddToInitiative={addCreatureToInitiative} />
         <Items />
       </TabbedContainer>
-    </div>
+    </>
   )
 }
 
