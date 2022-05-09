@@ -1,6 +1,6 @@
 export type Item = {
   attunement: boolean
-  description: Array<unknown>
+  description: Array<string | object>
   name: string
   rarity: Rarity
   type: ItemType

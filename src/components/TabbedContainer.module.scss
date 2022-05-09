@@ -4,8 +4,13 @@
   height: 100vh;
 }
 
+.nav {
+  display: grid;
+  height: 60px;
+}
+
 .tabs {
-  align-items: baseline;
+  align-items: stretch;
   border-bottom: 1px solid var(--c-border);
   display: flex;
   list-style: none;
@@ -15,9 +20,11 @@
 
 .tab {
   cursor: pointer;
+  display: grid;
   font-size: 16px;
   letter-spacing: 0.01em;
-  padding: 16px 24px;
+  padding: 0 24px;
+  place-items: center;
   text-transform: uppercase;
   transition: 160ms background-color ease-in-out;
 

@@ -21,7 +21,7 @@ type TabsProps = {
 }
 
 const Tabs: FC<TabsProps> = ({ currentTab, onChange, tabs }) => (
-  <nav>
+  <nav class={styles.nav}>
     <ol class={styles.tabs}>
       {tabs.map((tab, i) => (
         <li

@@ -14,13 +14,16 @@ const meta = (item: Item) =>
   }`
 
 const ExpandedItem: FC<Props> = ({ onCollapse, ...item }) => {
+  if (item.name === 'Deck of Many Things') console.log(item.description)
   return (
     <li class={styles.listItem}>
       <div class={styles.titleGroup} onClick={onCollapse}>
         <h2 class={styles.name}>{item.name}</h2>
         <p class={styles.sizeType}>{meta(item)}</p>
       </div>
-      <p class={styles.description}>{item.description.toString()}</p>
+      {item.description.map((line) => (
+        <p class={styles.description}>{line.toString()}</p>
+      ))}
     </li>
   )
 }

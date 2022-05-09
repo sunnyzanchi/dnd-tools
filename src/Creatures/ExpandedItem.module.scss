@@ -39,10 +39,10 @@
   cursor: pointer;
   display: grid;
   grid-template-columns: 1fr min-content;
-  margin: -20px -40px 5px -20px;
+  margin: -20px -60px 5px -20px;
   padding: 20px 20px 15px 20px;
   // + the negative right margin
-  max-width: calc(100% + 40px);
+  max-width: calc(100% + 60px);
 
   &:hover {
     background: var(--c-bg-hover);
