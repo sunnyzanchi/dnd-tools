@@ -8,21 +8,19 @@ type Props = Item & {
   onCollapse: () => unknown
 }
 
+const meta = (item: Item) =>
+  `${item.type}, ${item.rarity}${
+    item.attunement ? ', (requires attunement)' : ''
+  }`
+
 const ExpandedItem: FC<Props> = ({ onCollapse, ...item }) => {
   return (
     <li class={styles.listItem}>
       <div class={styles.titleGroup} onClick={onCollapse}>
         <h2 class={styles.name}>{item.name}</h2>
-        <p class={styles.sizeType}>{item.type}</p>
+        <p class={styles.sizeType}>{meta(item)}</p>
       </div>
-      <section class={styles.shortTraits}>
-        <TraitLine description={item.rarity} name="Rarity:" />
-        <TraitLine
-          description={item.attunement ? 'yes' : 'no'}
-          name="Requires attunement:"
-        />
-      </section>
-      <p class={styles.trait}>{item.description.toString()}</p>
+      <p class={styles.description}>{item.description.toString()}</p>
     </li>
   )
 }

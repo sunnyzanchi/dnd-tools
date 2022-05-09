@@ -5,8 +5,8 @@
   display: block;
   gap: 8px;
   grid-template-columns: 1fr min-content;
-  padding-right: 40px;
   padding: 20px;
+  padding-right: 40px;
 
   & button {
     border: 0;
@@ -97,6 +97,11 @@
   font-size: 48px;
   line-height: 1.4em;
   margin: 0;
+}
+
+.description {
+  composes: trait;
+  line-height: 1.46em;
 }
 
 .button-group {
