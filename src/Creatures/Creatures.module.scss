@@ -56,42 +56,6 @@
   place-items: center;
 }
 
-.list-item {
-  align-items: baseline;
-  display: grid;
-  gap: 8px;
-  grid-template-columns: max-content 1fr;
-  border-bottom: 1px solid var(--c-border);
-  color: var(--c-text-secondary);
-  cursor: pointer;
-  padding: 20px;
-
-  &.selected {
-    background: var(--c-bg-hover);
-  }
-
-  &:hover {
-    background: var(--c-bg-hover);
-  }
-
-  & p, h2 {
-    margin: 0;
-  }
-}
-
-.name {
-  font-size: 24px;
-}
-.type {
-  font-size: 15px;
-  font-style: italic;
-}
-
-.creature-list-item
-.name {
-  margin: 0;
-}
-
 .add-creature {
   background-color: transparent;
   border: 0;

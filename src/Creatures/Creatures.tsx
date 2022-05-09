@@ -12,6 +12,7 @@ import ExpandedItem from './ExpandedItem'
 import { AbilityScores, Creature, CreatureSize, CreatureType } from './types'
 import useCreatures from './useCreatures'
 import styles from './Creatures.module.scss'
+import ListItem from 'src/components/ListItem'
 
 const abilityScores: (creature: Creature) => AbilityScores = compose(
   mapValues((score) => Number.parseInt(score as string)),
@@ -145,14 +146,13 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
         }
 
         return (
-          <li
-            class={cx(styles.listItem, { selected: selected === i })}
+          <ListItem
+            selected={selected === i}
             key={c.name}
-            onClick={select(c.name)}
-          >
-            <h2 class={styles.name}>{c.name}</h2>
-            <p class={styles.type}>({type(c)})</p>
-          </li>
+            onSelect={select(c.name)}
+            title={c.name}
+            subText={type(c)}
+          />
         )
       })}
     </ol>

@@ -1,0 +1,36 @@
+.list-item {
+  align-items: baseline;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: max-content 1fr;
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-text-secondary);
+  cursor: pointer;
+  padding: 20px;
+
+  &.two-line {
+    gap: 4px;
+    grid-template-columns: 1fr;
+  }
+
+  &.selected {
+    background: var(--c-bg-hover);
+  }
+
+  &:hover {
+    background: var(--c-bg-hover);
+  }
+
+  & p, h2 {
+    margin: 0;
+  }
+}
+.title {
+  font-size: 24px;
+  margin: 0;
+
+}
+.sub-text {
+  font-size: 15px;
+  font-style: italic;
+}
