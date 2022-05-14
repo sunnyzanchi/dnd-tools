@@ -11,6 +11,7 @@ import Items from 'src/Items'
 import TabbedContainer from 'src/components/TabbedContainer'
 import { useRows } from 'src/hooks'
 import { updateAt } from 'src/utils'
+import { MdProvider } from 'src/hooks/useMdParser'
 
 const TABS = [{ name: 'Creatures' }, { name: 'Items' }]
 
@@ -41,15 +42,17 @@ const App: FC = () => {
 
   return (
     <>
-      <Initiative rows={rows} rowActions={rowActions} />
-      <TabbedContainer
-        currentTab={currentTab}
-        onChange={setCurrentTab}
-        tabs={TABS}
-      >
-        <Creatures onAddToInitiative={addCreatureToInitiative} />
-        <Items />
-      </TabbedContainer>
+      <MdProvider>
+        <Initiative rows={rows} rowActions={rowActions} />
+        <TabbedContainer
+          currentTab={currentTab}
+          onChange={setCurrentTab}
+          tabs={TABS}
+        >
+          <Creatures onAddToInitiative={addCreatureToInitiative} />
+          <Items />
+        </TabbedContainer>
+      </MdProvider>
     </>
   )
 }

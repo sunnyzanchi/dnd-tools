@@ -1,7 +1,7 @@
-import { marked } from 'marked'
 import { FunctionalComponent as FC } from 'preact'
 
 import styles from 'src/Creatures/ExpandedItem.module.scss'
+import { useMdParser } from 'src/hooks'
 import Table from './Table'
 import {
   assertUnreachable,
@@ -31,13 +31,18 @@ const meta = (item: Item) =>
  * this takes care of that.
  */
 const Line: FC<{ line: Description }> = ({ line }) => {
-  if (typeof line === 'string') {
+  const parse = useMdParser()
+
+  if (typeof line === 'string' && typeof parse === 'function') {
     return (
       <p
-        dangerouslySetInnerHTML={{ __html: marked.parse(line) }}
+        dangerouslySetInnerHTML={{ __html: parse(line) }}
         class={styles.description}
       />
     )
+  }
+  if (typeof line === 'string') {
+    return <p className={styles.description}>Loading...</p>
   }
   if (isTable(line)) {
     return <Table table={line.table} />
