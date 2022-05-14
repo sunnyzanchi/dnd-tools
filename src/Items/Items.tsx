@@ -1,16 +1,15 @@
 import compose from 'compose-function'
+import { matchSorter } from 'match-sorter'
 import { useState } from 'preact/hooks'
 
 import { getInputVal } from 'src/Creatures/utils'
-import { SearchHeader } from 'src/components'
-import { ListItem } from 'src/components'
+import { ListItem, SearchHeader } from 'src/components'
+import { useBool } from 'src/hooks'
+import CreateItem from './CreateItem'
 import ExpandedItem from './ExpandedItem'
 import { Item } from './types'
 import useItems from './useItems'
 import styles from './Items.module.scss'
-import { matchSorter } from 'match-sorter'
-import { useBool } from 'src/hooks'
-import CreateItem from './CreateItem'
 
 const Items = () => {
   const [items, { add: addItem }] = useItems()
