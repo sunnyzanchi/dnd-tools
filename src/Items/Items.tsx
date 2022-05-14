@@ -21,12 +21,7 @@ const Items = () => {
   const deselect = () => setExpanded(null)
   const select = (index: number) => () => setExpanded(index)
 
-  let filteredItems: Item[]
-  if (searchTerm !== '') {
-    filteredItems = matchSorter(items, searchTerm, { keys: ['name'] })
-  } else {
-    filteredItems = items
-  }
+  const filteredItems = matchSorter(items, searchTerm, { keys: ['name'] })
 
   return (
     <section class={styles.container}>
