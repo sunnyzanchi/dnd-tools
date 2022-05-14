@@ -10,14 +10,9 @@ import { promises as fs } from 'fs'
 import { dropLast, map, merge, omit, pick, set } from 'remeda'
 
 const RARITIES = ['common', 'uncommon', 'rare', 'very rare', 'legendary']
-const rarity = (metaStr = '') =>
-  RARITIES.find((st) => {
-    if (!metaStr.includes) console.log(metaStr)
-    return metaStr.includes(st)
-  })
+const rarity = (metaStr = '') => RARITIES.find((st) => metaStr.includes(st))
 
 const parseMeta = (metaStr = '') => {
-  metaStr.split || console.log(metaStr)
   const parts = metaStr.split(',')
   const rest = parts.slice(0, -1).join(',')
   const type = rest.match(/([a-zA-Z\s]+)(?:\(|,)?/)?.[1]?.trim()
