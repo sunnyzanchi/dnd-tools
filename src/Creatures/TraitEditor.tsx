@@ -5,6 +5,7 @@ import { mapKeys } from 'remeda'
 import styles from './Create.module.scss'
 import { Trait } from './types'
 import { Actions } from './useTraitEditor'
+import { getInputVal } from './utils'
 
 type ActionProps = {
   onAdd: () => unknown
@@ -26,10 +27,6 @@ type Props = ActionProps & {
   startText?: string
   traits: Trait[]
 }
-
-const getInputVal = (
-  e: JSX.TargetedEvent<HTMLInputElement | HTMLTextAreaElement>
-) => e.currentTarget.value
 
 /**
  * transform the names of the actions exported from the

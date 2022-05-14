@@ -9,6 +9,7 @@ import { mapProp } from 'src/utils'
 import { AbilityScores, Creature } from './types'
 import useTraitEditor from './useTraitEditor'
 import TraitEditor, { mapHookActions } from './TraitEditor'
+import { getInputVal } from './utils'
 
 const shortTraitPlaceholders = {
   'Saving Throws': 'STR +4, DEX +2, etc.',
@@ -27,9 +28,6 @@ const defaultAbilityScores = (): AbilityScores => ({
   WIS: 10,
   CHA: 10,
 })
-const getInputVal = (
-  e: JSX.TargetedEvent<HTMLInputElement | HTMLTextAreaElement>
-) => e.currentTarget.value
 
 type InputHandler = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => void
 type PhysicalTraits = {

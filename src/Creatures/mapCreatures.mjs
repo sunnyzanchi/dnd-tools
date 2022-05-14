@@ -117,4 +117,4 @@ const alter = compose(
     'img_url',
   ])
 )
-fs.writeFile('./creatures.json', JSON.stringify(creatures.map(alter)))
+fs.writeFile('./creatures.json', JSON.stringify(creatures.map(alter), null, 2))

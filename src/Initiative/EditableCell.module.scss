@@ -15,37 +15,42 @@
      the text in between.
    */
   user-select: none;
-}
 
-.editable-cell:focus-within,
-.editable-cell.selected {
-  border: 1px solid var(--c-border-selected);
-}
+  &:last-of-type {
+    border-right: 0;
+  }
 
-.editable-cell:focus-within:not(:hover)::after,
-.editable-cell.selected:not(:hover)::after {
-  background: var(--c-border-selected);
-  bottom: -1px;
-  content: '';
-  height: 1px;
-  left: -1px;
-  position: absolute;
-  width: 100%;
-}
+  &:focus-within,
+  &.selected {
+    border: 1px solid var(--c-border-selected);
+  }
 
-.editable-cell:focus-within:not(:hover)::before,
-.editable-cell.selected:not(:hover)::before {
-  background: var(--c-border-selected);
-  content: '';
-  height: 100%;
-  position: absolute;
-  right: -1px;
-  top: -1px;
-  width: 1px;
-}
+  &:focus-within:not(:hover)::after,
+  &.selected:not(:hover)::after {
+    background: var(--c-border-selected);
+    bottom: -1px;
+    content: '';
+    height: 1px;
+    left: -1px;
+    position: absolute;
+    width: 100%;
+  }
 
-.editable-cell:hover:not(:focus-within):not(.selected) {
-  border: 1px solid var(--c-border-hover);
+  &:focus-within:not(:hover)::before,
+  &.selected:not(:hover)::before {
+    background: var(--c-border-selected);
+    content: '';
+    height: 100%;
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    width: 1px;
+  }
+
+  &:hover:not(:focus-within):not(.selected) {
+    border: 1px solid var(--c-border-hover);
+  }
+
 }
 
 .editable-cell input {

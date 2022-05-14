@@ -1,0 +1,17 @@
+.table {
+  border-collapse: collapse;
+  font-size: 16px;
+
+  &:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  .number {
+    text-align: right;
+  }
+
+  td, th {
+    border: 1px solid var(--c-border-prominent);
+    padding: 4px 6px;
+  }
+}
