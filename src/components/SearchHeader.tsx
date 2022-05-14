@@ -1,4 +1,6 @@
 import { FunctionalComponent } from 'preact'
+
+import { Add } from 'src/icons'
 import styles from './SearchHeader.module.scss'
 
 type Props = {
@@ -23,7 +25,8 @@ const SearchHeader: FunctionalComponent<Props> = ({
       value={searchTerm}
     />
     <button class={styles.addButton} onClick={onAdd}>
-      add
+      <Add />
+      <p>add</p>
     </button>
   </header>
 )

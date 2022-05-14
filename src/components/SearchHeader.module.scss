@@ -1,23 +1,50 @@
 .add-button {
-  background-color: transparent;
-  border: 0;
-  border: 2px solid var(--c-text-decrease);
-  color: var(--c-text-decrease);
+  --border-radius: 20px;
+  align-self: center;
+  background: transparent;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--c-text);
+  color: var(--c-text);
   cursor: pointer;
   display: grid;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
+  height: 40px;
+  justify-self: end;
   line-height: 0;
-  padding: 12px;
+  padding: 0;
   place-items: center;
-  transition: 240ms background-color, 240ms color;
+  position: relative;
+  transition: 240ms background-color;
+  width: 100%;
 
   &:hover {
-    background-color: var(--c-text-decrease);
-    color: var(--c-bg);
+    background-color: var(--c-add-hover);
+  }
+
+  & p {
+    display: grid;
+    flex-grow: 1;
+    height: 100%;
+    margin: 0 0 0 16px;
+    padding: 0;
+    place-items: center;
+  }
+
+  & svg {
+    border-radius: var(--border-radius);
+    fill: var(--c-text);
+    height: 75%;
+    left: 8px;
+    position: absolute;
+    width: auto;
+  }
+
+  & svg path {
+    height: 20px;
+    width: 20px;
   }
 }
-
 
 .header {
   display: grid;
