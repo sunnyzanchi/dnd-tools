@@ -12,6 +12,9 @@
   --c-text: #323232;
   --c-text-increase: #075dcc;
   --c-text-decrease: #db3e00;
+
+  --f-sans-serif: 'Open Sans', 'Helvetica', Arial, ui-sans-serif, sans-serif;
+  --f-serif: 'Literata', Times New Roman, ui-serif, serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,7 +47,7 @@ body {
   padding: 0;
   margin: 0;
   background: var(--c-bg);
-  font-family: 'Open Sans', 'Helvetica', Arial, ui-sans-serif, sans-serif;
+  font-family: var(--f-sans-serif);
   font-size: 24px;
   font-weight: 400;
   color: var(--c-text);
@@ -55,7 +58,7 @@ input,
 select,
 select option,
 textarea {
-  font-family: 'Helvetica Neue', arial, sans-serif;
+  font-family: var(--f-sans-serif);
 }
 
 * {
@@ -65,5 +68,5 @@ textarea {
 h1,
 h2,
 h3 {
-  font-family: 'Literata', serif;
+  font-family: var(--f-serif);
 }
