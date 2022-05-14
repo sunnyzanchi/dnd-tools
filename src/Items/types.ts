@@ -24,14 +24,14 @@ type Rarity = 'common' | 'uncommon' | 'rare' | 'very rare' | 'legendary'
 
 type ItemType =
   | 'Armor'
-  | 'Weapon'
-  | 'Wondrous item'
-  | 'Rod'
   | 'Potion'
   | 'Ring'
+  | 'Rod'
   | 'Scroll'
   | 'Staff'
   | 'Wand'
+  | 'Weapon'
+  | 'Wondrous item'
 
 export const assertUnreachable = (x: never): never => {
   throw new Error("Didn't expect to get here")
