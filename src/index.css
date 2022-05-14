@@ -52,6 +52,8 @@ body {
 
 button,
 input,
+select,
+select option,
 textarea {
   font-family: 'Helvetica Neue', arial, sans-serif;
 }

@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import compose from 'compose-function'
 import { FunctionalComponent as FC } from 'preact'
 import { useState } from 'preact/hooks'
@@ -42,21 +43,34 @@ const CreateItem: FC<Props> = ({ onSave }) => {
 
   const title = name || 'New Item'
   return (
-    <div class={styles.container}>
+    <div class={cx(styles.container, styles.itemEditor)}>
       <h2>{title}</h2>
       <input onInput={compose(setName, getInputVal)} placeholder="name" />
-      <select onChange={compose(setRarity, getInputVal)} value={rarity}>
+      <label for="rarity">rarity</label>
+      <select
+        id="rarity"
+        onChange={compose(setRarity, getInputVal)}
+        value={rarity}
+      >
         {RARITIES.map((rarity) => (
           <option>{rarity}</option>
         ))}
       </select>
-      <select onChange={compose(setType, getInputVal)} value={type}>
+      <label for="type">type</label>
+      <select id="type" onChange={compose(setType, getInputVal)} value={type}>
         {TYPES.map((type) => (
           <option>{type}</option>
         ))}
       </select>
-      <input onChange={toggleAttunement} type="checkbox" checked={attunement} />
+      <label for="attunement">requires attunement</label>
+      <input
+        id="attunement"
+        onChange={toggleAttunement}
+        type="checkbox"
+        checked={attunement}
+      />
       <textarea
+        class={styles.description}
         onInput={compose(setDescription, getInputVal)}
         placeholder="description (markdown is supported)"
       />

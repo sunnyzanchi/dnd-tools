@@ -54,6 +54,10 @@
   line-height: 1.4em;
   margin: 0;
 
+  & p {
+    margin: 0;
+  }
+
   & span {
     font-weight: 700;
   }
@@ -98,10 +102,14 @@
 .description {
   composes: trait;
   line-height: 1.46em;
-  margin-bottom: 16px;
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
 }
 
 .description-header {
+  font-size: 28px;
   margin: 0 0 8px;
 }
 
