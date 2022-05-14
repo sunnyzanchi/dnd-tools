@@ -9,9 +9,12 @@ import { Item } from './types'
 import useItems from './useItems'
 import styles from './Items.module.scss'
 import { matchSorter } from 'match-sorter'
+import { useBool } from 'src/hooks'
+import CreateItem from './CreateItem'
 
 const Items = () => {
-  const [items] = useItems()
+  const [items, { add: addItem }] = useItems()
+  const [creating, { toggle: toggleCreating }] = useBool(false)
   const [expanded, setExpanded] = useState<number | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -29,11 +32,12 @@ const Items = () => {
   return (
     <section class={styles.container}>
       <SearchHeader
-        onAdd={() => {}}
+        onAdd={toggleCreating}
         onInput={compose(setSearchTerm, getInputVal)}
         searchTerm={searchTerm}
         title="Magic Items"
       />
+      {creating && <CreateItem onSave={addItem} />}
       <ol class={styles.items}>
         {filteredItems.map((item, i) =>
           expanded === i ? (
