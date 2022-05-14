@@ -1,3 +1,4 @@
+import { marked } from 'marked'
 import { FunctionalComponent as FC } from 'preact'
 
 import styles from 'src/Creatures/ExpandedItem.module.scss'
@@ -31,7 +32,12 @@ const meta = (item: Item) =>
  */
 const Line: FC<{ line: Description }> = ({ line }) => {
   if (typeof line === 'string') {
-    return <p class={styles.description}>{line}</p>
+    return (
+      <p
+        dangerouslySetInnerHTML={{ __html: marked.parse(line) }}
+        class={styles.description}
+      />
+    )
   }
   if (isTable(line)) {
     return <Table table={line.table} />
