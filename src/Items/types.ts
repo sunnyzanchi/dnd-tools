@@ -1,6 +1,20 @@
+export type DescriptionTable = {
+  table: {
+    [key: string]: string[]
+  }
+}
+// i think this is only used for Bag of Tricks.
+export type Section = {
+  [header: string]: DescriptionTable
+}
+
+type BulletPoints = string[]
+export type Description = Array<
+  string | DescriptionTable | BulletPoints | Section
+>
 export type Item = {
   attunement: boolean
-  description: Array<string | object>
+  description: Description
   name: string
   rarity: Rarity
   type: ItemType
@@ -18,3 +32,7 @@ type ItemType =
   | 'Scroll'
   | 'Staff'
   | 'Wand'
+
+export const assertUnreachable = (x: never): never => {
+  throw new Error("Didn't expect to get here")
+}
