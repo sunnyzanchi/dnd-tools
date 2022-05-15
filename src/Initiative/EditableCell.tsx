@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { ComponentChildren, FunctionComponent as FC } from 'preact'
 import { useContext } from 'preact/hooks'
 
-import { FloatingInput } from '.'
+import { FloatingInput } from './Initiative'
 import styles from './EditableCell.module.scss'
 
 export type CellDisplay = ComponentChildren

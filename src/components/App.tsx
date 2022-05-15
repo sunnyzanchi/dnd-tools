@@ -5,7 +5,7 @@ import { first } from 'remeda'
 
 import Creatures from 'src/Creatures'
 import { Creature } from 'src/Creatures/types'
-import Initiative from 'src/Initiative'
+import { Initiative } from 'src/Initiative'
 import { RowValue } from 'src/Initiative/Row'
 import Items from 'src/Items'
 import TabbedContainer from 'src/components/TabbedContainer'
