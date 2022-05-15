@@ -1,22 +1,8 @@
 .add-button {
-  --border-radius: 20px;
+  composes: button from './button.module.scss';
   align-self: center;
-  background: transparent;
-  border-radius: var(--border-radius);
-  border: 2px solid var(--c-text);
-  color: var(--c-text);
-  cursor: pointer;
-  display: grid;
-  font-size: 20px;
-  font-weight: 400;
-  height: 40px;
+  gap: 8px;
   justify-self: end;
-  line-height: 0;
-  padding: 0;
-  place-items: center;
-  position: relative;
-  transition: 240ms background-color;
-  width: 100%;
 
   &:hover {
     background-color: var(--c-add-hover);
@@ -26,7 +12,7 @@
     display: grid;
     flex-grow: 1;
     height: 100%;
-    margin: 0 0 0 16px;
+    margin: 0 0 0 20px;
     padding: 0;
     place-items: center;
   }

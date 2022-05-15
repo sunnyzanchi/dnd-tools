@@ -131,30 +131,8 @@
   }
 }
 
-.button {
-  align-self: center;
-  background: transparent;
-  border-radius: 20px;
-  border: 2px solid var(--c-text);
-  color: var(--c-text);
-  cursor: pointer;
-  display: grid;
-  font-size: 20px;
-  font-weight: 400;
-  height: 40px;
-  line-height: 0;
-  margin: 0;
-  padding: 0 16px;
-  place-items: center;
-  transition: 240ms background-color, 240ms color;
-
-  &:hover {
-    background-color: var(--c-text-decrease);
-  }
-}
-
 .add-button {
-  composes: button;
+  composes: button from 'src/components/button.module.scss';
   grid-column-end: -1;
   margin-top: 20px;
   text-transform: lowercase;
@@ -165,8 +143,12 @@
 }
 
 .save-button {
-  composes: button;
+  composes: button from '../components/button.module.scss';
   grid-column: 1 / -1;
+
+  &:hover {
+    background: var(--c-add-hover);
+  }
 }
 
 .description.trait-editor textarea {
