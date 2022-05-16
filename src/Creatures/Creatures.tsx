@@ -22,19 +22,19 @@ const abilityScores: (creature: Creature) => AbilityScores = compose(
 )
 const parseMeta = (
   creature: Creature
-): [CreatureSize, CreatureType, string] => {
+): { alignment: string; size: CreatureSize; type: CreatureType } => {
   const [sizeAndType, alignment] = creature.meta.split(',')
   const [size, ...type] = sizeAndType.split(' ')
 
-  return [
-    size as CreatureSize,
-    type.join(' ') as CreatureType,
-    alignment.trim(),
-  ]
+  return {
+    size: size as CreatureSize,
+    type: type.join(' ') as CreatureType,
+    alignment: alignment.trim(),
+  }
 }
-const size = (creature: Creature) => parseMeta(creature)[0]
-const type = (creature: Creature) => parseMeta(creature)[1]
-const alignment = (creature: Creature) => parseMeta(creature)[2]
+const alignment = (creature: Creature) => parseMeta(creature).alignment
+const size = (creature: Creature) => parseMeta(creature).size
+const type = (creature: Creature) => parseMeta(creature).type
 const shortTraits = (creature: Creature) =>
   pick(creature, [
     'Saving Throws',
