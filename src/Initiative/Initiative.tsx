@@ -27,8 +27,6 @@ import ecstyles from './EditableCell.module.scss'
 const INPUT_CLASSNAME = 'cell-input'
 const ROW_HEIGHT = 60 // px
 
-type HistoryEntry = [index: number, prevRow: RowValue, newRow: RowValue]
-
 /**
  * when multiselecting, the input shows up wherever the last selection was.
  * this lets an `EditableCell` decide to render the `input`
