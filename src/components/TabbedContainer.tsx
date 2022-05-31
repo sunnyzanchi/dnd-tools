@@ -5,7 +5,7 @@ import styles from './TabbedContainer.module.scss'
 
 type Props = {
   currentTab: number
-  children: JSX.Element[]
+  children: (JSX.Element | false)[]
   onChange: (i: number) => unknown
   tabs: Tab[]
 }
