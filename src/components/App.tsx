@@ -6,6 +6,7 @@ import { first } from 'remeda'
 import Creatures from 'src/Creatures'
 import { Creature } from 'src/Creatures/types'
 import { Initiative } from 'src/Initiative'
+import { flatHp } from 'src/Creatures/utils'
 import { RowValue } from 'src/Initiative/Row'
 import Items from 'src/Items'
 import TabbedContainer from 'src/components/TabbedContainer'
@@ -14,13 +15,6 @@ import { updateAt } from 'src/utils'
 import { MdProvider } from 'src/hooks/useMdParser'
 
 const TABS = [{ name: 'Creatures' }, { name: 'Items' }]
-
-const flatHp: (c: Creature) => number = compose(
-  Number,
-  first,
-  (hpString: string) => hpString.split(' '),
-  (c) => c['Hit Points']
-)
 
 const App: FC = () => {
   const [currentTab, setCurrentTab] = useState(0)
