@@ -10,7 +10,6 @@ import {
   Trait,
 } from './types'
 import styles from './ExpandedItem.module.scss'
-import { useEffect, useRef } from 'preact/hooks'
 
 const HAMBURGER = '☰'
 
@@ -29,7 +28,6 @@ type Props = {
     Speed: string
   }
   reactions: Trait[]
-  scrollTo: (top: number) => void
   selected?: boolean
   shortTraits: {
     'Condition Immunities'?: string
@@ -66,33 +64,16 @@ const ExpandedItem: FC<Props> = ({
   onCollapse,
   physicalTraits,
   reactions,
-  scrollTo,
   selected,
   shortTraits,
   size,
   traits,
   type,
-}) => {
-  const liRef = useRef<HTMLLIElement | null>(null)
-
-  useEffect(() => {
-    if (!liRef.current) return
-
-    const { offsetTop: top } = liRef.current
-
-    scrollTo(top)
-    // if we only depend on `liRef.current`,
-    // expanding an item directly below or
-    // above the currently expanded item
-    // won't trigger the scroll behavior
-    // since Preact reuses the DOM node.
-  }, [liRef.current, name])
-
-  return (
-    <li class={cx(styles.listItem, { selected })} key={name} ref={liRef}>
-      <div class={styles.titleGroup} onClick={onCollapse}>
-        <h2 class={styles.name}>{name}</h2>
-        {/* <div class={styles.buttonGroup}>
+}) => (
+  <li class={cx(styles.listItem, { selected })} key={name}>
+    <div class={styles.titleGroup} onClick={onCollapse}>
+      <h2 class={styles.name}>{name}</h2>
+      {/* <div class={styles.buttonGroup}>
           <button class={styles.addToInitiative} onClick={onAdd}>
             {HAMBURGER}
           </button>
@@ -100,82 +81,81 @@ const ExpandedItem: FC<Props> = ({
             col
           </button>
         </div> */}
-        <p class={styles.sizeType}>
-          {size} {type}, {alignment}
-        </p>
-      </div>
+      <p class={styles.sizeType}>
+        {size} {type}, {alignment}
+      </p>
+    </div>
 
-      <div class={styles.fadeIn}>
-        <section class={styles.shortTraits}>
-          {Object.entries(physicalTraits).map(([name, value]) => (
-            <p class={styles.trait}>
-              <span>{name}: </span>
-              {value}
-            </p>
-          ))}
-        </section>
+    <div class={styles.fadeIn}>
+      <section class={styles.shortTraits}>
+        {Object.entries(physicalTraits).map(([name, value]) => (
+          <p class={styles.trait}>
+            <span>{name}: </span>
+            {value}
+          </p>
+        ))}
+      </section>
 
-        <AbilityScores {...abilityScores} />
+      <AbilityScores {...abilityScores} />
 
-        <section class={styles.shortTraits}>
-          {Object.entries(shortTraits).map(([name, value]) => (
-            <p class={styles.trait}>
-              <span>{name}: </span>
-              {value}
-            </p>
-          ))}
-        </section>
+      <section class={styles.shortTraits}>
+        {Object.entries(shortTraits).map(([name, value]) => (
+          <p class={styles.trait}>
+            <span>{name}: </span>
+            {value}
+          </p>
+        ))}
+      </section>
 
-        {!empty(traits) && (
-          <>
-            <hr />
-            <section class={styles.traits}>
-              {traits.map((trait) => (
-                <TraitLine {...trait} />
-              ))}
-            </section>
-          </>
-        )}
+      {!empty(traits) && (
+        <>
+          <hr />
+          <section class={styles.traits}>
+            {traits.map((trait) => (
+              <TraitLine {...trait} />
+            ))}
+          </section>
+        </>
+      )}
 
-        {!empty(actions) && (
-          <>
-            <hr />
-            <section class={styles.actions}>
-              <h3>Actions</h3>
-              {actions!.map((action) => (
-                <TraitLine {...action} />
-              ))}
-            </section>
-          </>
-        )}
+      {!empty(actions) && (
+        <>
+          <hr />
+          <section class={styles.actions}>
+            <h3>Actions</h3>
+            {actions!.map((action) => (
+              <TraitLine {...action} />
+            ))}
+          </section>
+        </>
+      )}
 
-        {!empty(reactions) && (
-          <>
-            <hr />
-            <section class={styles.reactions}>
-              <h3>Reactions</h3>
-              {reactions!.map((action) => (
-                <TraitLine {...action} />
-              ))}
-            </section>
-          </>
-        )}
+      {!empty(reactions) && (
+        <>
+          <hr />
+          <section class={styles.reactions}>
+            <h3>Reactions</h3>
+            {reactions!.map((action) => (
+              <TraitLine {...action} />
+            ))}
+          </section>
+        </>
+      )}
 
-        {!empty(legendaryActions) && (
-          <>
-            <hr />
-            <section className={styles.legendaryActions}>
-              <h3>Legendary Actions</h3>
-              <p class={styles.trait}>{legendaryActions!.startText}</p>
-              {legendaryActions!.actions.map((la) => (
-                <TraitLine {...la} />
-              ))}
-            </section>
-          </>
-        )}
-      </div>
-    </li>
-  )
-}
+      {!empty(legendaryActions) && (
+        <>
+          <hr />
+          <section className={styles.legendaryActions}>
+            <h3>Legendary Actions</h3>
+            <p class={styles.trait}>{legendaryActions!.startText}</p>
+            {legendaryActions!.actions.map((la) => (
+              <TraitLine {...la} />
+            ))}
+          </section>
+        </>
+      )}
+    </div>
+  </li>
+)
 
 export default ExpandedItem
