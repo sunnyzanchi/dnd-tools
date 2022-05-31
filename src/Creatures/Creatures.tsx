@@ -7,7 +7,7 @@ import { FunctionComponent as FC } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { mapKeys, mapValues, pick } from 'remeda'
 
-import { useBool } from 'src/hooks'
+import { useBool, useScreenSize } from 'src/hooks'
 import Create from './Create'
 import ExpandedItem from './ExpandedItem'
 import { SearchHeader } from 'src/components'
@@ -70,6 +70,8 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   const [expanded, setExpanded] = useState<number | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selected, setSelected] = useState<number | null>(null)
+  const [width] = useScreenSize()
+  const containerRef = useRef<HTMLElement | null>(null)
   const olRef = useRef<HTMLOListElement | null>(null)
   useEffect(() => {
     setSelected(null)
@@ -155,17 +157,25 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   useKeyBind(['ArrowUp'], selectPrev, [setSelected])
 
   const deselect = () => setExpanded(null)
+  const scrollTo = (top: number) => {
+    const args = {
+      behavior: 'smooth',
+      top,
+    }
+
+    // on mobile, the window is as tall as the content.
+    // on desktop, the window is as tall as the screen,
+    // and the containing section has overflow: scroll.
+    if (width < 601) {
+      window.scrollTo(args as ScrollToOptions)
+    } else {
+      // account for tabs at top.
+      args.top -= 60
+      containerRef.current?.scrollTo(args as ScrollToOptions)
+    }
+  }
   const select = (index: number) => () => {
     setExpanded(index)
-    // @ts-expect-error if `expanded === null` this is false anyway
-    if (index > expanded) {
-      const rect = olRef.current?.children?.[expanded!]?.getBoundingClientRect()
-      if (rect != null) {
-        const height = rect.height - 95
-        // olRef.current?.scrollBy(0, -height)
-        // scrollDownByHeightofPreviouslyOpenContainer()
-      }
-    }
   }
 
   const creatureList = (
@@ -183,6 +193,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
               onCollapse={deselect}
               physicalTraits={physicalTraits(c)}
               reactions={c.Reactions}
+              scrollTo={scrollTo}
               selected={selected === i}
               shortTraits={shortTraits(c)}
               size={size(c)}
@@ -206,7 +217,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   )
 
   return (
-    <section class={styles.container}>
+    <section class={styles.container} ref={containerRef}>
       <SearchHeader
         onAdd={toggleCreating}
         onInput={compose(setSearchTerm, getInputVal)}

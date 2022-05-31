@@ -29,6 +29,7 @@ type Props = {
     Speed: string
   }
   reactions: Trait[]
+  scrollTo: (top: number) => void
   selected?: boolean
   shortTraits: {
     'Condition Immunities'?: string
@@ -65,6 +66,7 @@ const ExpandedItem: FC<Props> = ({
   onCollapse,
   physicalTraits,
   reactions,
+  scrollTo,
   selected,
   shortTraits,
   size,
@@ -78,7 +80,7 @@ const ExpandedItem: FC<Props> = ({
 
     const { offsetTop: top } = liRef.current
 
-    window.scrollTo({ behavior: 'smooth', top })
+    scrollTo(top)
     // if we only depend on `liRef.current`,
     // expanding an item directly below or
     // above the currently expanded item
@@ -90,14 +92,14 @@ const ExpandedItem: FC<Props> = ({
     <li class={cx(styles.listItem, { selected })} key={name} ref={liRef}>
       <div class={styles.titleGroup} onClick={onCollapse}>
         <h2 class={styles.name}>{name}</h2>
-        <div class={styles.buttonGroup}>
+        {/* <div class={styles.buttonGroup}>
           <button class={styles.addToInitiative} onClick={onAdd}>
             {HAMBURGER}
           </button>
-          {/* <button class="collapse" onClick={onCollapse}>
+          <button class="collapse" onClick={onCollapse}>
             col
-          </button> */}
-        </div>
+          </button>
+        </div> */}
         <p class={styles.sizeType}>
           {size} {type}, {alignment}
         </p>
