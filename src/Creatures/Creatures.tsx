@@ -1,9 +1,10 @@
 import cx from 'classnames'
 import useKeyBind from '@zanchi/use-key-bind'
 import compose from 'compose-function'
+import { spring } from 'css-spring'
 import { matchSorter } from 'match-sorter'
 import { FunctionComponent as FC } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { mapKeys, mapValues, pick } from 'remeda'
 
 import { useBool } from 'src/hooks'
@@ -56,15 +57,50 @@ type Props = {
   onAddToInitiative: (c: Creature) => unknown
 }
 
+const slideDownKeyframes = (height: number): Keyframe[] =>
+  spring(
+    { transform: `translateY(-${height}px)` },
+    { transform: 'translateY(0px)' },
+    { precision: 2, damping: 23, stiffness: 300 }
+  )
+
 const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   const [creatures, { add: addCreature }] = useCreatures()
   const [creating, { toggle: toggleCreating }] = useBool(false)
-  const [expanded, setExpanded] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<number | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selected, setSelected] = useState<number | null>(null)
+  const olRef = useRef<HTMLOListElement | null>(null)
   useEffect(() => {
     setSelected(null)
   }, [searchTerm])
+
+  useEffect(() => {
+    const lis = olRef.current?.children
+    if (lis == null || expanded == null) return
+
+    const lisBelow = Array.prototype.slice.apply(lis, [
+      expanded,
+    ]) as unknown as HTMLCollection
+
+    const { height } = lis[expanded].getBoundingClientRect()
+    const keyframes = Object.values(slideDownKeyframes(height - 95))
+    // duration should increase slightly as
+    // the amount the items need to move increases.
+    const duration = 380 + (0.012 * height) ** 2
+    // we don't animate every element after the expanding item,
+    // `.animate` is pretty slow and doing a lot is a huge perf hit.
+    // 10 should be enough to get to the bottom of the screen,
+    // and we don't want to go past the last item.
+    const maxIndex = Math.min(lisBelow.length, expanded + 10)
+
+    for (let i = 1; i < maxIndex; i += 1) {
+      lisBelow[i].animate(keyframes, {
+        easing: 'linear',
+        duration,
+      })
+    }
+  }, [expanded])
 
   let filteredCreatures: Creature[]
   if (/<>=/.test(searchTerm)) {
@@ -103,14 +139,12 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
     ['Enter'],
     () => {
       if (filteredCreatures.length > 0) {
-        const result = filteredCreatures[0].name
         // we're hitting enter from the input
         if (selected == null) {
-          setExpanded(result)
-          setSearchTerm(result)
+          setExpanded(0)
         } else {
-          const name = filteredCreatures[selected].name
-          setExpanded(name === expanded ? null : name)
+          // const name = filteredCreatures[selected].name
+          // setExpanded(name === expanded ? null : name)
         }
       }
     },
@@ -120,13 +154,24 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   useKeyBind(['ArrowDown'], selectNext, [setSelected])
   useKeyBind(['ArrowUp'], selectPrev, [setSelected])
 
-  const deselect = () => setExpanded('')
-  const select = (name: string) => () => setExpanded(name)
+  const deselect = () => setExpanded(null)
+  const select = (index: number) => () => {
+    setExpanded(index)
+    // @ts-expect-error if `expanded === null` this is false anyway
+    if (index > expanded) {
+      const rect = olRef.current?.children?.[expanded!]?.getBoundingClientRect()
+      if (rect != null) {
+        const height = rect.height - 95
+        // olRef.current?.scrollBy(0, -height)
+        // scrollDownByHeightofPreviouslyOpenContainer()
+      }
+    }
+  }
 
   const creatureList = (
-    <ol class={styles.creatures}>
+    <ol class={styles.creatures} ref={olRef}>
       {filteredCreatures.map((c, i) => {
-        if (expanded === c.name) {
+        if (i === expanded) {
           return (
             <ExpandedItem
               abilityScores={abilityScores(c)}
@@ -151,7 +196,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
           <ListItem
             selected={selected === i}
             key={c.name}
-            onSelect={select(c.name)}
+            onSelect={select(i)}
             title={c.name}
             subText={type(c)}
           />

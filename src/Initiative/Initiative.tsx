@@ -90,6 +90,10 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
     // -1 because of the header
     const numRows = Math.floor(height / ROW_HEIGHT) - 1
 
+    if (rows.some((r) => Object.values(r).some(Boolean))) {
+      return
+    }
+
     clearRowHistory()
     setRows(createRows(numRows))
   }, [height])

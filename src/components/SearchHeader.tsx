@@ -21,7 +21,7 @@ const SearchHeader: FunctionalComponent<Props> = ({
     <input
       class={styles.search}
       onInput={onInput}
-      placeholder="Search"
+      placeholder="search"
       value={searchTerm}
     />
     <button class={styles.addButton} onClick={onAdd}>
