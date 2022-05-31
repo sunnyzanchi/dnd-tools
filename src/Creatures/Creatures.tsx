@@ -61,7 +61,7 @@ const slideDownKeyframes = (height: number): Keyframe[] =>
   spring(
     { transform: `translateY(-${height}px)` },
     { transform: 'translateY(0px)' },
-    { precision: 2, damping: 23, stiffness: 300 }
+    { precision: 2, damping: 21, stiffness: 200 }
   )
 
 const Creatures: FC<Props> = ({ onAddToInitiative }) => {
@@ -89,7 +89,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
     const keyframes = Object.values(slideDownKeyframes(height - 95))
     // duration should increase slightly as
     // the amount the items need to move increases.
-    const duration = 380 + (0.012 * height) ** 2
+    const duration = 360 + (0.012 * height) ** 2
     // we don't animate every element after the expanding item,
     // `.animate` is pretty slow and doing a lot is a huge perf hit.
     // 10 should be enough to get to the bottom of the screen,
@@ -99,7 +99,9 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
     for (let i = 1; i < maxIndex; i += 1) {
       lisBelow[i].animate(keyframes, {
         easing: 'linear',
+        delay: 40,
         duration,
+        fill: 'backwards',
       })
     }
   }, [expanded])
