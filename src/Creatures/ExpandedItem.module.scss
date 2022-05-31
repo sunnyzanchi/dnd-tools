@@ -1,19 +1,34 @@
+@use 'src/breakpoints' as *;
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: 180ms 160ms fade-in backwards ease-in;
+}
+
 .list-item {
   align-items: baseline;
   border-bottom: 1px solid var(--c-border);
   color: var(--c-text-secondary);
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   gap: 8px;
   grid-template-columns: 1fr min-content;
-  padding: 20px;
-  padding-right: 40px;
+  padding: 20px 16px 20px 16px;
 
   & button {
     border: 0;
     background: var(--c-bg);
     color: var(--c-text);
     cursor: pointer;
+    font-size: 32px;
     padding: 12px;
   }
   & button:hover {
@@ -30,6 +45,12 @@
       margin-bottom: 20px;
     }
   }
+
+  @include for-desktop {
+    font-size: 16px;
+    padding-left: 20px;
+    padding-right: 40px;
+  }
 }
 
 .title-group {
@@ -37,13 +58,18 @@
   display: grid;
   row-gap: 6px;
   grid-template-columns: 1fr min-content;
-  margin: -20px -60px 5px -20px;
+  margin: -20px -16px 5px -20px;
   padding: 20px 10px 15px 20px;
   // + the negative right margin
   max-width: calc(100% + 60px);
 
   &:hover {
     background: var(--c-bg-hover);
+  }
+
+  @include for-desktop {
+    row-gap: 2px;
+    margin-right: -40px;
   }
 }
 .size-type {
@@ -71,7 +97,13 @@
   white-space: pre-wrap;
 
   & .trait {
-    line-height: 1.2em
+    line-height: 1.32em;
+  }
+
+  @include for-desktop {
+    & .trait {
+      line-height: 1.2em;
+    }
   }
 }
 
@@ -86,8 +118,12 @@
 
   & h3 {
     color: var(--c-text);
-    font-size: 36px;
+    font-size: 20px;
     margin: 0;
+
+    @include for-desktop {
+      font-size: 36px;
+    }
   }
 
   & .trait {
@@ -96,9 +132,13 @@
 }
 
 .name {
-  font-size: 56px;
-  line-height: 1.2em;
+  font-size: 28px;
   margin: 0;
+
+  @include for-desktop {
+    font-size: 56px;
+    line-height: 1.2em;
+  }
 }
 
 .description {

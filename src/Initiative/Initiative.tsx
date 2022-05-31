@@ -232,7 +232,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
 
   return (
     <FloatingInput.Provider value={input}>
-      <div class={styles.initiative}>
+      <section class={styles.container}>
         <ol class={styles.rows} ref={sizeRef as Ref<HTMLOListElement>}>
           <Header onSort={sortRows} />
           {rows.map(formatRow(selections, inputValue)).map((r, i) => (
@@ -252,7 +252,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
         <button class={styles.nextButton} onClick={nextTurn}>
           {turn != null ? 'Next' : 'Start'}
         </button>
-      </div>
+      </section>
     </FloatingInput.Provider>
   )
 }

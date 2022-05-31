@@ -1,19 +1,35 @@
+@use 'src/breakpoints' as *;
+
 .container {
   display: grid;
   grid-template-rows: min-content 1fr;
-  overflow-y: scroll;
-  scrollbar-width: thin;
+
+  width: 100vw;
   
   & hr {
     border: 0;
     border-bottom: 1px solid var(--c-border);
+  }
+  
+  @include for-desktop {
+    height: unset;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    width: unset;
   }
 }
 
 .creatures {
   list-style: none;
   margin: 0;
+  // so the last list item isn't
+  // covered by the tabs.
+  margin-bottom: 60px;
   padding: 0;
+
+  @include for-desktop {
+    margin-bottom: 0;
+  }
 }
 
 .loading {

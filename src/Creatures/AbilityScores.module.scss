@@ -1,15 +1,21 @@
+@use 'src/breakpoints' as *;
+
 .scores {
   align-items: center;
   background: var(--c-border-contrast);
   border: 1px solid var(--c-border-contrast);
   display: grid;
-  font-size: 20px;
+  font-size: 16px;
   gap: 1px;
   grid-column: span 2;
   grid-template-columns: repeat(3, 1fr);
   list-style: none;
   margin: 0 0 20px;
   padding: 0;
+  
+  @include for-desktop {
+    font-size: 20px;
+  }
 
   @media(min-width: 1620px) {
     grid-template-columns: repeat(6, 1fr);
