@@ -1,12 +1,17 @@
+@use 'src/breakpoints' as *;
+
 .list-item {
   align-items: baseline;
+  background: var(--c-bg);
   display: grid;
-  gap: 8px;
-  grid-template-columns: max-content 1fr;
+  // these two properties are
+  // to match `.two-line`.
+  gap: 4px;
+  grid-template-columns: 1fr;
   border-bottom: 1px solid var(--c-border);
   color: var(--c-text-secondary);
   cursor: pointer;
-  padding: 20px;
+  padding: 20px 12px 20px 16px;
 
   &.two-line {
     gap: 4px;
@@ -21,16 +26,30 @@
     background: var(--c-bg-hover);
   }
 
-  & p, h2 {
+  & p,
+  h2 {
     margin: 0;
+  }
+
+  @include for-desktop {
+    gap: 8px;
+    grid-template-columns: max-content 1fr;
+    padding: 20px;
   }
 }
 .title {
-  font-size: 28px;
+  font-size: 20px;
   margin: 0;
 
+  @include for-desktop {
+    font-size: 28px;
+  }
 }
 .sub-text {
-  font-size: 15px;
+  font-size: 14px;
   font-style: italic;
+
+  @include for-desktop {
+    font-size: 15px;
+  }
 }

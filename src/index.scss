@@ -1,3 +1,5 @@
+@use 'src/breakpoints' as *;
+
 :root {
   --c-add-hover: #e6ffdf;
   --c-bg: #fbfbfb;
@@ -39,7 +41,10 @@
 
 #app {
   display: grid;
-  grid-template-columns: 65% 35%;
+
+  @include for-desktop {
+    grid-template-columns: 65% 35%;
+  }
 }
 
 html,
@@ -50,9 +55,13 @@ body {
   margin: 0;
   background: var(--c-bg);
   font-family: var(--f-sans-serif);
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--c-text);
+  
+  @include for-desktop {
+    font-size: 24px;
+  }
 }
 
 button,

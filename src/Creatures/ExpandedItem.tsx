@@ -11,6 +11,8 @@ import {
 } from './types'
 import styles from './ExpandedItem.module.scss'
 
+const HAMBURGER = '☰'
+
 type Props = {
   actions?: Trait[]
   abilityScores: AbScores
@@ -67,24 +69,24 @@ const ExpandedItem: FC<Props> = ({
   size,
   traits,
   type,
-}) => {
-  return (
-    <li class={cx(styles.listItem, { selected })} key={name}>
-      <div class={styles.titleGroup} onClick={onCollapse}>
-        <h2 class={styles.name}>{name}</h2>
-        <div class={styles.buttonGroup}>
+}) => (
+  <li class={cx(styles.listItem, { selected })} key={name}>
+    <div class={styles.titleGroup} onClick={onCollapse}>
+      <h2 class={styles.name}>{name}</h2>
+      {/* <div class={styles.buttonGroup}>
           <button class={styles.addToInitiative} onClick={onAdd}>
-            add
+            {HAMBURGER}
           </button>
-          {/* <button class="collapse" onClick={onCollapse}>
+          <button class="collapse" onClick={onCollapse}>
             col
-          </button> */}
-        </div>
-        <p class={styles.sizeType}>
-          {size} {type}, {alignment}
-        </p>
-      </div>
+          </button>
+        </div> */}
+      <p class={styles.sizeType}>
+        {size} {type}, {alignment}
+      </p>
+    </div>
 
+    <div class={styles.fadeIn}>
       <section class={styles.shortTraits}>
         {Object.entries(physicalTraits).map(([name, value]) => (
           <p class={styles.trait}>
@@ -152,8 +154,8 @@ const ExpandedItem: FC<Props> = ({
           </section>
         </>
       )}
-    </li>
-  )
-}
+    </div>
+  </li>
+)
 
 export default ExpandedItem

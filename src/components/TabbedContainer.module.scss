@@ -1,21 +1,47 @@
+@use 'src/breakpoints' as *;
+
+$mobile-nav-height: 60px;
+
 .container {
   display: grid;
-  grid-template-rows: min-content 1fr;
   height: 100vh;
+  position: relative;
+  
+  @include for-desktop {
+    grid-template-rows: min-content 1fr;
+  }
 }
 
+// tabs on the bottom for mobile is more ergonomic
 .nav {
+  background: var(--c-bg);
+  bottom: 0;
   display: grid;
-  height: 60px;
+  height: $mobile-nav-height;
+  left: 0;
+  overflow-y: scroll;
+  position: fixed;
+  scrollbar-width: thin;
+  width: 100%;
+  z-index: 2;
+
+  @include for-desktop {
+    order: unset;
+    position: static;
+  }
 }
 
 .tabs {
   align-items: stretch;
-  border-bottom: 1px solid var(--c-border);
+  border-top: 2px solid var(--c-border);
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
+
+  @include for-desktop {
+    border-bottom: 1px solid var(--c-border);
+  }
 }
 
 .tab {
@@ -34,6 +60,13 @@
 }
 
 .selected-tab {
-  border-bottom: 1px solid var(--c-border-selected);
-  margin-bottom: -1px;
+  border-top: 2px solid var(--c-border-selected);
+  margin-top: -2px;
+  
+  @include for-desktop {
+    margin-bottom: -1px;
+    margin-top: unset;
+    border-bottom: 1px solid var(--c-border-selected);
+    border-top: 0;
+  }
 }

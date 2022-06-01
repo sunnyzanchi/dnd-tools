@@ -1,0 +1,8 @@
+// can't use CSS vars with media queries 😢.
+$bp-desktop: 600px;
+
+@mixin for-desktop {
+  @media (min-width: $bp-desktop) {
+    @content;
+  }
+}

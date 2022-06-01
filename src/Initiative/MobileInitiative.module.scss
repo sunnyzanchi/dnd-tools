@@ -1,0 +1,79 @@
+.card {
+  align-items: baseline;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: min-content 1fr max-content;
+  height: 16vh;
+  padding: 16px;
+
+  & * {
+    margin: 0;
+  }
+}
+
+.cards {
+  align-content: start;
+  display: grid;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: grid;
+  gap: 20px;
+  grid-template-rows: max-content 1fr;
+  padding: 24px;
+  padding-bottom: 60px;
+  position: relative;
+
+  h1 {
+    font-size: 32px;
+    margin: 0;
+  }
+}
+
+.empty-state {
+  display: grid;
+  font-size: 18px;
+  place-items: center;
+  text-align: center;
+
+  & p {
+    margin: 0;
+    max-width: 64vw;
+  }
+}
+
+.fab {
+  --size: 72px;
+  --spacing: 28px;
+  background: #99345f;
+  border: 0;
+  border-radius: 17px;
+  // account for navbar.
+  bottom: calc(60px + var(--spacing));
+  color: var(--c-text);
+  cursor: pointer;
+  height: var(--size);
+  position: fixed;
+  right: var(--spacing);
+  width: var(--size);
+}
+
+.initiative20 {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr max-content 1fr;
+
+  & hr {
+    border: 0;
+    border-bottom: 1px solid var(--c-border-prominent);
+    margin: 0;
+    width: 100%;
+  }
+}
