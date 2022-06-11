@@ -62,6 +62,9 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
       set: setSelections,
     },
   ] = useSelections()
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const hasFocus = () =>
+    containerRef.current?.contains(document.activeElement) ?? false
   const [lastSelectedRow, lastSelectedColumn] = last(selections) ?? [NaN, NaN]
 
   // these three `const`s are to support the floating input.
@@ -113,6 +116,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   useKeyBind(
     ['Enter', 'ArrowDown'],
     () => {
+      if (!hasFocus()) return
       if (empty(selections)) return
 
       // if `inputValue` only contains numbers we want to store
@@ -280,7 +284,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
 
   return (
     <FloatingInput.Provider value={input}>
-      <div class={styles.initiative}>
+      <div class={styles.initiative} ref={containerRef}>
         <ol class={styles.rows} ref={sizeRef as Ref<HTMLOListElement>}>
           <Header onSort={sortRows} />
           {rows.map(formatRow(selections, inputValue)).map((r, i) => (

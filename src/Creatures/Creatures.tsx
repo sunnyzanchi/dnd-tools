@@ -3,7 +3,7 @@ import useKeyBind from '@zanchi/use-key-bind'
 import compose from 'compose-function'
 import { matchSorter } from 'match-sorter'
 import { FunctionComponent as FC } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { mapKeys, mapValues, pick } from 'remeda'
 
 import { useBool } from 'src/hooks'
@@ -62,6 +62,8 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selected, setSelected] = useState<number | null>(null)
+  const containerRef = useRef<HTMLElement | null>(null)
+  const hasFocus = () => containerRef.current?.contains(document.activeElement)
   useEffect(() => {
     setSelected(null)
   }, [searchTerm])
@@ -102,6 +104,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   useKeyBind(
     ['Enter'],
     () => {
+      if (!hasFocus()) return
       if (filteredCreatures.length > 0) {
         const result = filteredCreatures[0].name
         // we're hitting enter from the input
@@ -117,8 +120,22 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
     []
   )
 
-  useKeyBind(['ArrowDown'], selectNext, [setSelected])
-  useKeyBind(['ArrowUp'], selectPrev, [setSelected])
+  useKeyBind(
+    ['ArrowDown'],
+    () => {
+      if (!hasFocus()) return
+      selectNext()
+    },
+    [setSelected]
+  )
+  useKeyBind(
+    ['ArrowUp'],
+    () => {
+      if (!hasFocus()) return
+      selectPrev()
+    },
+    [setSelected]
+  )
 
   const deselect = () => setExpanded('')
   const select = (name: string) => () => setExpanded(name)
@@ -161,7 +178,7 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   )
 
   return (
-    <section class={styles.container}>
+    <section class={styles.container} ref={containerRef}>
       <SearchHeader
         onAdd={toggleCreating}
         onInput={compose(setSearchTerm, getInputVal)}
