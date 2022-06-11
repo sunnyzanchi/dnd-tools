@@ -62,7 +62,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
       set: setSelections,
     },
   ] = useSelections()
-  const [lastRow, lastColumn] = last(selections) ?? [NaN, NaN]
+  const [lastSelectedRow, lastSelectedColumn] = last(selections) ?? [NaN, NaN]
 
   // these three `const`s are to support the floating input.
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -79,9 +79,9 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   // when the user selects something new,
   // the value in the input should be whatever they just selected.
   useEffect(() => {
-    if (Number.isNaN(lastRow)) return
+    if (Number.isNaN(lastSelectedRow)) return
 
-    const value = rows[lastRow][COLUMNS[lastColumn]]
+    const value = rows[lastSelectedRow][COLUMNS[lastSelectedColumn]]
     setInputValue(value)
   }, [selections])
 
@@ -111,7 +111,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   ])
 
   useKeyBind(
-    ['Enter'],
+    ['Enter', 'ArrowDown'],
     () => {
       if (empty(selections)) return
 
@@ -129,7 +129,7 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   )
 
   useKeyBind(
-    ['Shift + Enter'],
+    ['Shift + Enter', 'ArrowUp'],
     () => {
       if (empty(selections)) return
 
@@ -148,12 +148,34 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
     },
     [selections]
   )
+  useKeyBind(
+    ['ArrowRight'],
+    (e) => {
+      e.preventDefault()
+      if (empty(selections)) return
+      if (!empty(inputValue)) return
+
+      navigate('right')
+    },
+    [selections]
+  )
 
   useKeyBind(
     ['Shift + Tab'],
     (e) => {
       e.preventDefault()
       if (empty(selections)) return
+
+      navigate('left')
+    },
+    [selections]
+  )
+  useKeyBind(
+    ['ArrowLeft'],
+    (e) => {
+      e.preventDefault()
+      if (empty(selections)) return
+      if (!empty(inputValue)) return
 
       navigate('left')
     },
@@ -175,12 +197,27 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   }, [])
 
   const navigate = (direction: 'up' | 'down' | 'left' | 'right') => {
-    ;({
-      down: () => setSelections([[lastRow + 1, lastColumn]]),
-      left: () => setSelections([[lastRow, lastColumn - 1]]),
-      right: () => setSelections([[lastRow, lastColumn + 1]]),
-      up: () => setSelections([[lastRow - 1, lastColumn]]),
-    }[direction]())
+    const directionFns = {
+      down: () => {
+        if (lastSelectedRow + 1 === rows.length) return
+        setSelections([[lastSelectedRow + 1, lastSelectedColumn]])
+      },
+      left: () => {
+        if (lastSelectedColumn - 1 < 0) return
+        setSelections([[lastSelectedRow, lastSelectedColumn - 1]])
+      },
+      right: () => {
+        const numColumns = Object.keys(rows[0]).length
+        if (lastSelectedColumn + 1 === numColumns) return
+        setSelections([[lastSelectedRow, lastSelectedColumn + 1]])
+      },
+      up: () => {
+        if (lastSelectedRow - 1 < 0) return
+        setSelections([[lastSelectedRow - 1, lastSelectedColumn]])
+      },
+    }
+
+    directionFns[direction]()
 
     // to avoid showing the `inputValue` from the previous cell.
     setInputValue('')
@@ -240,7 +277,9 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
               {...(r as RowValue)}
               isTurn={turn === i}
               key={i}
-              editingCell={i === lastRow ? lastColumn : undefined}
+              editingCell={
+                i === lastSelectedRow ? lastSelectedColumn : undefined
+              }
               onSelect={select(i)}
               // if we have at least one selected row,
               // we should always have at least one selected column.
