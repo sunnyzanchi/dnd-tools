@@ -22,11 +22,13 @@ type TabsProps = {
 
 const Tabs: FC<TabsProps> = ({ currentTab, onChange, tabs }) => (
   <nav class={styles.nav}>
-    <ol class={styles.tabs}>
+    <ol class={styles.tabs} role="tablist">
       {tabs.map((tab, i) => (
         <li
           class={cx(styles.tab, i === currentTab && styles.selectedTab)}
           onClick={() => onChange(i)}
+          id={`${tab.name}-tab`}
+          role="tab"
         >
           {tab.name}
         </li>

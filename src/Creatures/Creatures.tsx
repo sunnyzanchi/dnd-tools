@@ -178,7 +178,12 @@ const Creatures: FC<Props> = ({ onAddToInitiative }) => {
   )
 
   return (
-    <section class={styles.container} ref={containerRef}>
+    <section
+      aria-labelledby="Creatures-tab"
+      class={styles.container}
+      ref={containerRef}
+      role="tabpanel"
+    >
       <SearchHeader
         onAdd={toggleCreating}
         onInput={compose(setSearchTerm, getInputVal)}

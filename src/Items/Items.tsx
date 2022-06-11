@@ -24,7 +24,11 @@ const Items = () => {
   const filteredItems = matchSorter(items, searchTerm, { keys: ['name'] })
 
   return (
-    <section class={styles.container}>
+    <section
+      aria-labelledby="Items-tab"
+      class={styles.container}
+      role="tabpanel"
+    >
       <SearchHeader
         onAdd={toggleCreating}
         onInput={compose(setSearchTerm, getInputVal)}
