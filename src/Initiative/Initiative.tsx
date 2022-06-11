@@ -129,9 +129,20 @@ const Initiative: FC<Props> = ({ rows, rowActions }) => {
   )
 
   useKeyBind(
-    ['Shift + Enter', 'ArrowUp'],
+    ['Shift + Enter'],
     () => {
       if (empty(selections)) return
+
+      navigate('up')
+    },
+    [selections]
+  )
+
+  useKeyBind(
+    ['ArrowUp'],
+    () => {
+      if (empty(selections)) return
+      if (!empty(inputValue)) return
 
       navigate('up')
     },
