@@ -25,7 +25,7 @@ const mapProp = (prop, fn) => (obj) => ({
  * need to have a root element,
  * the source has unwrapped sibling nodes.
  */
-const parseHtml = (str = '') => parse(`<div>${str}<div>`)
+const parseHtml = (str = '') => parse(`<div>${str}</div>`)
 
 const spellcastingDesc = (html) =>
   html
