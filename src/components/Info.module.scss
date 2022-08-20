@@ -1,0 +1,63 @@
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.backdrop {
+  animation: 200ms fadein forwards ease-out;
+  background: rgba(0, 0, 0, 0.33);
+  display: grid;
+  height: 100%;
+  place-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.dialog {
+  background: var(--c-bg-dialog);
+  border-radius: 8px;
+  border: 0;
+  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2), -4px -4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--c-text);
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  padding: 32px;
+  position: relative;
+  width: 320px;
+
+  button {
+    --size: 28px;
+    background: var(--c-bg-button);
+    border-radius: 50%;
+    border: 0;
+    color: var(--c-text);
+    cursor: pointer;
+    display: grid;
+    font-size: 0.46em;
+    height: var(--size);
+    place-items: center;
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: var(--size);
+  }
+  button:hover {
+    background: var(--c-bg-button-hover);
+  }
+
+  h1 {
+    font-size: 1.5em;
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 1em;
+  }
+}

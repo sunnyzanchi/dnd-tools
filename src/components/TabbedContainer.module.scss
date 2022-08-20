@@ -4,16 +4,37 @@
   height: 100vh;
 }
 
-.nav {
+.info-button {
+  --size: 32px;
+  background: var(--c-bg-button);
+  border: 0;
+  border-radius: 50%;
+  color: var(--c-text-secondary);
+  cursor: pointer;
   display: grid;
+  height: 32px;
+  justify-self: end;
+  place-items: center;
+  width: 32px;
+}
+.info-button:hover {
+  background: var(--c-bg-button-hover);
+}
+
+.nav {
+  align-items: center;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
   height: 60px;
+  justify-content: space-between;
+  padding-right: 16px;
 }
 
 .tabs {
   align-items: stretch;
-  border-bottom: 1px solid var(--c-border);
   display: flex;
   list-style: none;
+  height: 100%;
   margin: 0;
   padding: 0;
 }

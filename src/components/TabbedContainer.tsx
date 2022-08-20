@@ -7,6 +7,7 @@ type Props = {
   currentTab: number
   children: JSX.Element[]
   onChange: (i: number) => unknown
+  onClickInfo: () => unknown
   tabs: Tab[]
 }
 
@@ -17,10 +18,11 @@ type Tab = {
 type TabsProps = {
   currentTab: number
   onChange: (i: number) => unknown
+  onClickInfo: () => unknown
   tabs: Tab[]
 }
 
-const Tabs: FC<TabsProps> = ({ currentTab, onChange, tabs }) => (
+const Tabs: FC<TabsProps> = ({ currentTab, onChange, onClickInfo, tabs }) => (
   <nav class={styles.nav}>
     <ol class={styles.tabs} role="tablist">
       {tabs.map((tab, i) => (
@@ -34,6 +36,10 @@ const Tabs: FC<TabsProps> = ({ currentTab, onChange, tabs }) => (
         </li>
       ))}
     </ol>
+
+    <button aria-label="About" class={styles.infoButton} onClick={onClickInfo}>
+      ?
+    </button>
   </nav>
 )
 

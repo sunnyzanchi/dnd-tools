@@ -8,8 +8,9 @@ import { Creature } from 'src/Creatures/types'
 import { Initiative } from 'src/Initiative'
 import { RowValue } from 'src/Initiative/Row'
 import Items from 'src/Items'
+import Info from 'src/components/Info'
 import TabbedContainer from 'src/components/TabbedContainer'
-import { useRows } from 'src/hooks'
+import { useBool, useRows } from 'src/hooks'
 import { updateAt } from 'src/utils'
 import { MdProvider } from 'src/hooks/useMdParser'
 
@@ -23,6 +24,7 @@ const flatHp: (c: Creature) => number = compose(
 )
 
 const App: FC = () => {
+  const [showInfo, { toggle: toggleShowInfo }] = useBool(false)
   const [currentTab, setCurrentTab] = useState(0)
   const [rows, rowActions] = useRows()
 
@@ -42,11 +44,13 @@ const App: FC = () => {
 
   return (
     <>
+      {showInfo && <Info onClose={toggleShowInfo} />}
       <MdProvider>
         <Initiative rows={rows} rowActions={rowActions} />
         <TabbedContainer
           currentTab={currentTab}
           onChange={setCurrentTab}
+          onClickInfo={toggleShowInfo}
           tabs={TABS}
         >
           <Creatures onAddToInitiative={addCreatureToInitiative} />

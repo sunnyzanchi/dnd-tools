@@ -1,6 +1,9 @@
 :root {
   --c-add-hover: #e6ffdf;
   --c-bg: #fbfbfb;
+  --c-bg-button: #e5e6e9;
+  --c-bg-button-hover: #dbdbdc;
+  --c-bg-dialog: #fff;
   --c-bg-hover: #f4f4f4;
   --c-border: #cdcdcd;
   --c-border-contrast: #161616;
@@ -22,6 +25,9 @@
   :root {
     --c-add-hover: #0f2f15;
     --c-bg: #0d0e0c;
+    --c-bg-button: #36373c;
+    --c-bg-button-hover: #4b4d59;
+    --c-bg-dialog: #1d1e20;
     --c-bg-hover: #121310;
     --c-border: #222;
     --c-border-contrast: #a4a4a4;
